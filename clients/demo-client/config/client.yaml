@@ -1,0 +1,21 @@
+client_id: demo-client
+client_name: BrightPath Creative
+client_type: small_marketing_agency
+currency: USD
+industry: marketing_agency
+description: >
+  Demo client configuration for a small marketing agency that delivers
+  ad creative and landing page work on fixed-scope contracts with explicit
+  overage pricing.
+contract_rules_path: contract_rules.yaml
+field_mapping_path: field_mapping.yaml
+sample_sow_path: ../inputs/sow.md
+sample_work_log_path: ../inputs/work_log.csv
+scope_source_type: local_fixture
+work_source_type: local_fixture
+billing_source_type: manual
+default_outputs:
+  scope_creep_event_format: json
+  compensation_draft_format: json
+  audit_mode: strict
+  compensation_enforcement_mode: recommend

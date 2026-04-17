@@ -1,0 +1,12 @@
+{
+  "client_id": "demo-client",
+  "client_name": "BrightPath Creative",
+  "review_status": "pending",
+  "recommended_action": "These items are recommended for inclusion in the upcoming invoice.",
+  "invoice_file_references": {
+    "invoice_json": "clients/demo-client/outputs/demo-client-invoice.json",
+    "invoice_markdown": "clients/demo-client/outputs/demo-client-invoice.md"
+  },
+  "invoice_id": "invoice-demo-client-2026-04-30",
+  "total_amount": 1000.0
+}

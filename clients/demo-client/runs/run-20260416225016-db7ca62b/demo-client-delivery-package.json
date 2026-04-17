@@ -1,0 +1,13 @@
+{
+  "client_name": "BrightPath Creative",
+  "generated_at": "2026-04-16T22:50:16",
+  "included_artifacts": {
+    "scope_creep_report_path": "clients/demo-client/outputs/demo-client-scope-creep-report.md",
+    "invoice_markdown_path": "clients/demo-client/outputs/demo-client-invoice.md",
+    "invoice_json_path": "clients/demo-client/outputs/demo-client-invoice.json",
+    "billing_cover_path": "clients/demo-client/billing/demo-client-billing-cover.md",
+    "billing_package_path": "clients/demo-client/billing/demo-client-billing-package.json"
+  },
+  "delivery_status": "ready_for_review",
+  "recommended_recipient_type": "finance"
+}

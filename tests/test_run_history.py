@@ -52,8 +52,8 @@ class RunHistoryTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 run_single_client(client_dir)
 
-            run_history_dir = tmp_path / "outputs" / "run_history"
-            history_files = list(run_history_dir.glob("*.json"))
+            run_history_dir = client_dir / "runs"
+            history_files = list(run_history_dir.glob("*/run_metadata.json"))
             self.assertEqual(len(history_files), 1)
             metadata = json.loads(history_files[0].read_text(encoding="utf-8"))
             self.assertEqual(metadata["status"], "failure")

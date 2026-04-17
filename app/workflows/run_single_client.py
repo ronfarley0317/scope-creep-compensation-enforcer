@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any
@@ -18,11 +19,13 @@ from app.sources.resolver import SourceResolver
 
 def run_single_client(client_dir: str | Path) -> dict[str, Any]:
     base_path = Path(client_dir)
+    client_root, config_dir = _resolve_client_layout(base_path)
     run_id = _generate_run_id()
     started_at = datetime.now()
-    client_name = base_path.name
+    client_name = client_root.name
     output_paths: dict[str, str] = {}
-    run_history_dir = Path("outputs/run_history").resolve()
+    run_dir = client_root / "runs" / run_id
+    run_history_path = run_dir / "run_metadata.json"
     source_lane_types = {
         "scope_source_type": "unknown",
         "work_source_type": "unknown",
@@ -30,16 +33,18 @@ def run_single_client(client_dir: str | Path) -> dict[str, Any]:
     }
 
     try:
-        bundle = load_client_bundle(base_path)
-        client_config = {**bundle.client, "_client_dir": str(base_path)}
+        bundle = load_client_bundle(config_dir)
+        client_config = {
+            **bundle.client,
+            "_client_dir": str(config_dir),
+            "_client_root": str(client_root),
+        }
         client_name = client_config.get("client_name", client_name)
         source_lane_types = {
             "scope_source_type": client_config.get("scope_source_type", "unknown"),
             "work_source_type": client_config.get("work_source_type", "unknown"),
             "billing_source_type": client_config.get("billing_source_type", "unknown"),
         }
-        output_dir = _resolve_path(base_path, bundle.client["output_dir"])
-        run_history_dir = output_dir.parent / "run_history"
         normalizer = ScopeNormalizer(client_config, bundle.contract_rules, bundle.field_mapping)
 
         source_resolver = SourceResolver()
@@ -68,7 +73,7 @@ def run_single_client(client_dir: str | Path) -> dict[str, Any]:
             comparison_result.creep_events,
             invoice_date=invoice_date,
         )
-        invoice_file_refs = _invoice_output_paths(output_dir.parent / "invoices", client_config["client_id"])
+        invoice_file_refs = _latest_invoice_output_paths(client_root / "outputs", client_config["client_id"])
         billing_artifact = billing_adapter.prepare_billing_package(
             client_config,
             {
@@ -111,17 +116,27 @@ def run_single_client(client_dir: str | Path) -> dict[str, Any]:
         output_payload["overdelivery_summary"] = build_overdelivery_summary(output_payload)
         output_payload["revenue_leakage_projection"] = build_revenue_leakage_projection(output_payload)
 
-        output_paths = _write_outputs(output_dir, output_payload, billing_adapter)
+        output_paths = _write_outputs(client_root, run_id, output_payload, billing_adapter)
         output_payload["output_paths"] = output_paths
         output_payload["terminal_summary"] = build_terminal_summary(output_payload)
         markdown_summary = build_markdown_summary(output_payload)
         output_payload["markdown_summary"] = markdown_summary
         client_report = build_client_report(output_payload)
         output_payload["client_report"] = client_report
-        Path(output_paths["markdown_summary"]).write_text(markdown_summary, encoding="utf-8")
-        Path(output_paths["client_report"]).write_text(client_report, encoding="utf-8")
-        delivery_artifact = DeliveryArtifactGenerator().build(output_payload, output_paths)
-        delivery_paths = _write_delivery_artifacts(output_dir.parent / "delivery", output_payload, delivery_artifact)
+        Path(output_paths["run_markdown_summary"]).write_text(markdown_summary, encoding="utf-8")
+        Path(output_paths["run_client_report"]).write_text(client_report, encoding="utf-8")
+        _copy_latest_outputs(output_paths)
+        delivery_artifact = DeliveryArtifactGenerator().build(
+            output_payload,
+            {
+                "client_report": output_paths["client_report"],
+                "invoice_json": output_paths["invoice_json"],
+                "invoice_markdown": output_paths["invoice_markdown"],
+                "billing_package_json": output_paths["billing_package_json"],
+                "billing_cover_markdown": output_paths["billing_cover_markdown"],
+            },
+        )
+        delivery_paths = _write_delivery_artifacts(run_dir, output_payload, delivery_artifact)
         output_paths.update(delivery_paths)
         output_payload["delivery_artifacts"] = {
             "delivery_package_json": delivery_artifact.package_json,
@@ -144,8 +159,8 @@ def run_single_client(client_dir: str | Path) -> dict[str, Any]:
             generated_artifacts=dict(output_paths),
             error_message=None,
         )
-        run_history_path = _write_run_history(run_history_dir, run_metadata)
-        output_paths["run_history"] = run_history_path
+        _write_run_history(run_history_path, run_metadata)
+        output_paths["run_history"] = str(run_history_path)
         output_payload["run_history"] = run_metadata.to_dict()
         output_payload["output_paths"] = output_paths
         Path(output_paths["run_summary"]).write_text(
@@ -167,7 +182,7 @@ def run_single_client(client_dir: str | Path) -> dict[str, Any]:
             generated_artifacts=dict(output_paths),
             error_message=str(exc),
         )
-        _write_run_history(run_history_dir, run_metadata)
+        _write_run_history(run_history_path, run_metadata)
         raise
 
 
@@ -197,7 +212,7 @@ def build_terminal_summary(run_result: dict[str, Any]) -> str:
 
 
 def main() -> None:
-    result = run_single_client(Path("configs/clients/demo-client"))
+    result = run_single_client(Path("clients/demo-client"))
     print(result["terminal_summary"])
 
 
@@ -205,9 +220,8 @@ def _generate_run_id() -> str:
     return f"run-{datetime.now().strftime('%Y%m%d%H%M%S')}-{uuid4().hex[:8]}"
 
 
-def _write_run_history(run_history_dir: Path, run_metadata: RunMetadata) -> str:
-    run_history_dir.mkdir(parents=True, exist_ok=True)
-    path = run_history_dir / f"{run_metadata.run_id}.json"
+def _write_run_history(path: Path, run_metadata: RunMetadata) -> str:
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(run_metadata.to_dict(), indent=2), encoding="utf-8")
     return str(path)
 
@@ -519,32 +533,49 @@ def _recovery_band(confidence: str) -> tuple[float, float]:
     return bands[confidence]
 
 
-def _write_outputs(output_dir: Path, output_payload: dict[str, Any], billing_adapter: Any) -> dict[str, str]:
-    output_dir.mkdir(parents=True, exist_ok=True)
-    comparison_path = output_dir / "comparison.json"
-    compensation_path = output_dir / "compensation.json"
-    run_summary_path = output_dir / "run_summary.json"
-    markdown_summary_path = output_dir / "summary.md"
-    report_dir = output_dir.parent / "reports"
-    report_path = report_dir / "demo-client-scope-creep-report.md"
-    invoice_dir = output_dir.parent / "invoices"
-    billing_dir = output_dir.parent / "billing"
+def _write_outputs(
+    client_root: Path,
+    run_id: str,
+    output_payload: dict[str, Any],
+    billing_adapter: Any,
+) -> dict[str, str]:
+    run_dir = client_root / "runs" / run_id
+    latest_outputs_dir = client_root / "outputs"
+    latest_billing_dir = client_root / "billing"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    latest_outputs_dir.mkdir(parents=True, exist_ok=True)
+    latest_billing_dir.mkdir(parents=True, exist_ok=True)
+
+    comparison_path = run_dir / "comparison.json"
+    compensation_path = run_dir / "compensation.json"
+    run_summary_path = run_dir / "run_summary.json"
+    markdown_summary_path = run_dir / "summary.md"
+    report_path = run_dir / "scope-creep-report.md"
     comparison_path.write_text(json.dumps(output_payload["comparison"], indent=2), encoding="utf-8")
     compensation_path.write_text(json.dumps(output_payload["compensation"], indent=2), encoding="utf-8")
-    report_dir.mkdir(parents=True, exist_ok=True)
-    invoice_paths = _write_invoice_artifacts(invoice_dir, output_payload)
-    billing_paths = _write_billing_artifacts(billing_dir, output_payload, billing_adapter)
+    invoice_paths = _write_invoice_artifacts(run_dir, output_payload)
+    latest_invoice_paths = _write_latest_invoice_artifacts(latest_outputs_dir, output_payload)
+    billing_paths = _write_billing_artifacts(run_dir, output_payload, billing_adapter)
+    latest_billing_paths = _write_latest_billing_artifacts(latest_billing_dir, output_payload, billing_adapter)
+    latest_report_path = latest_outputs_dir / f"{output_payload['client']['client_id']}-scope-creep-report.md"
     return {
-        "output_dir": str(output_dir),
+        "client_root": str(client_root),
+        "run_dir": str(run_dir),
+        "output_dir": str(run_dir),
         "comparison": str(comparison_path),
         "compensation": str(compensation_path),
         "run_summary": str(run_summary_path),
-        "markdown_summary": str(markdown_summary_path),
-        "client_report": str(report_path),
-        "invoice_json": invoice_paths["invoice_json"],
-        "invoice_markdown": invoice_paths["invoice_markdown"],
-        "billing_package_json": billing_paths["billing_package_json"],
-        "billing_cover_markdown": billing_paths["billing_cover_markdown"],
+        "run_markdown_summary": str(markdown_summary_path),
+        "run_client_report": str(report_path),
+        "run_invoice_json": invoice_paths["invoice_json"],
+        "run_invoice_markdown": invoice_paths["invoice_markdown"],
+        "run_billing_package_json": billing_paths["billing_package_json"],
+        "run_billing_cover_markdown": billing_paths["billing_cover_markdown"],
+        "client_report": str(latest_report_path),
+        "invoice_json": latest_invoice_paths["invoice_json"],
+        "invoice_markdown": latest_invoice_paths["invoice_markdown"],
+        "billing_package_json": latest_billing_paths["billing_package_json"],
+        "billing_cover_markdown": latest_billing_paths["billing_cover_markdown"],
     }
 
 
@@ -553,6 +584,10 @@ def _invoice_output_paths(output_dir: Path, client_slug: str) -> dict[str, str]:
         "invoice_json": str(output_dir / f"{client_slug}-invoice.json"),
         "invoice_markdown": str(output_dir / f"{client_slug}-invoice.md"),
     }
+
+
+def _latest_invoice_output_paths(output_dir: Path, client_slug: str) -> dict[str, str]:
+    return _invoice_output_paths(output_dir, client_slug)
 
 
 def _write_invoice_artifacts(output_dir: Path, output_payload: dict[str, Any]) -> dict[str, str]:
@@ -575,6 +610,10 @@ def _write_invoice_artifacts(output_dir: Path, output_payload: dict[str, Any]) -
     }
 
 
+def _write_latest_invoice_artifacts(output_dir: Path, output_payload: dict[str, Any]) -> dict[str, str]:
+    return _write_invoice_artifacts(output_dir, output_payload)
+
+
 def _write_billing_artifacts(
     output_dir: Path,
     output_payload: dict[str, Any],
@@ -582,6 +621,14 @@ def _write_billing_artifacts(
 ) -> dict[str, str]:
     client_slug = output_payload["client"]["client_id"]
     return billing_adapter.write(output_dir, client_slug, output_payload["billing_artifacts"])
+
+
+def _write_latest_billing_artifacts(
+    output_dir: Path,
+    output_payload: dict[str, Any],
+    billing_adapter: Any,
+) -> dict[str, str]:
+    return _write_billing_artifacts(output_dir, output_payload, billing_adapter)
 
 
 def _write_delivery_artifacts(
@@ -603,6 +650,23 @@ def _resolve_path(base_path: Path, value: str) -> Path:
     if nested.exists():
         return nested.resolve()
     return path.resolve()
+
+
+def _resolve_client_layout(base_path: Path) -> tuple[Path, Path]:
+    if (base_path / "config" / "client.yaml").exists():
+        return base_path, base_path / "config"
+    if base_path.name == "config" and (base_path / "client.yaml").exists():
+        return base_path.parent, base_path
+    if (base_path / "client.yaml").exists():
+        return base_path, base_path
+    raise FileNotFoundError(f"Could not locate client.yaml under {base_path}")
+
+
+def _copy_latest_outputs(output_paths: dict[str, str]) -> None:
+    report_source = Path(output_paths["run_client_report"])
+    report_target = Path(output_paths["client_report"])
+    report_target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(report_source, report_target)
 
 
 def _resolve_invoice_date(raw_work_log: dict[str, Any]) -> str:

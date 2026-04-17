@@ -10,7 +10,7 @@ from app.services.config_loader import load_yaml
 from app.workflows.run_single_client import run_single_client
 
 
-def run_all_clients(configs_root: str | Path = Path("configs/clients")) -> dict[str, Any]:
+def run_all_clients(configs_root: str | Path = Path("clients")) -> dict[str, Any]:
     base_path = Path(configs_root)
     client_dirs = _discover_client_dirs(base_path)
     batch_id = _generate_batch_id()
@@ -65,45 +65,57 @@ def run_all_clients(configs_root: str | Path = Path("configs/clients")) -> dict[
 
 
 def main() -> None:
-    result = run_all_clients(Path("configs/clients"))
+    result = run_all_clients(Path("clients"))
     print(result["output_paths"]["batch_summary_markdown"])
 
 
 def _discover_client_dirs(configs_root: Path) -> list[Path]:
     if not configs_root.exists():
         return []
-    return sorted(
-        path for path in configs_root.iterdir() if path.is_dir() and (path / "client.yaml").exists()
-    )
+    discovered: list[Path] = []
+    for path in configs_root.iterdir():
+        if not path.is_dir():
+            continue
+        if (path / "config" / "client.yaml").exists():
+            discovered.append(path)
+            continue
+        if (path / "client.yaml").exists():
+            discovered.append(path)
+    return sorted(discovered)
 
 
 def _load_client_stub(client_dir: Path) -> dict[str, Any]:
-    client_yaml = client_dir / "client.yaml"
+    client_yaml = client_dir / "config" / "client.yaml"
+    if not client_yaml.exists():
+        client_yaml = client_dir / "client.yaml"
     if not client_yaml.exists():
         return {}
     return load_yaml(client_yaml)
 
 
 def _resolve_run_history_dir(client_dir: Path, client_stub: dict[str, Any]) -> Path:
-    output_dir_value = client_stub.get("output_dir")
-    if output_dir_value:
-        output_dir = _resolve_path(client_dir, str(output_dir_value))
-        return output_dir.parent / "run_history"
-    return _workspace_root_from_configs(client_dir.parent).resolve() / "outputs" / "run_history"
+    return client_dir / "runs"
 
 
 def _history_snapshot(run_history_dir: Path) -> set[str]:
     if not run_history_dir.exists():
         return set()
-    return {path.name for path in run_history_dir.glob("*.json")}
+    return {
+        str(path.relative_to(run_history_dir))
+        for path in run_history_dir.glob("*/run_metadata.json")
+    }
 
 
 def _read_new_run_history(run_history_dir: Path, before: set[str]) -> dict[str, Any]:
     if not run_history_dir.exists():
         return {}
-    candidates = [path for path in run_history_dir.glob("*.json") if path.name not in before]
+    candidates = [
+        path
+        for path in run_history_dir.glob("*/run_metadata.json")
+        if str(path.relative_to(run_history_dir)) not in before
+    ]
     if not candidates:
-        candidates = list(run_history_dir.glob("*.json"))
+        candidates = list(run_history_dir.glob("*/run_metadata.json"))
     if not candidates:
         return {}
     latest = max(candidates, key=lambda path: path.stat().st_mtime)
@@ -116,6 +128,8 @@ def _batch_output_dir(configs_root: Path) -> Path:
 
 def _workspace_root_from_configs(configs_root: Path) -> Path:
     resolved = configs_root.resolve()
+    if resolved.name == "clients":
+        return resolved.parent
     if resolved.name == "clients" and resolved.parent.name == "configs":
         return resolved.parent.parent
     return Path.cwd().resolve()

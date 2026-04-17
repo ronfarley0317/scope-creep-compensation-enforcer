@@ -1,0 +1,73 @@
+client_id: demo-client
+contract_name: BrightPath Creative Monthly Campaign Package
+contract_version: 1
+currency: USD
+scope:
+  deliverables:
+    - id: ad-creatives
+      name: Ad Creatives
+      included_quantity: 4
+      unit: creatives
+      task_categories:
+        - ad_creative
+        - static_ad_design
+        - paid_social_creative
+      notes: Includes up to four completed ad creatives for the campaign period.
+    - id: landing-page
+      name: Landing Page
+      included_quantity: 1
+      unit: page
+      task_categories:
+        - landing_page
+        - landing_page_design
+        - landing_page_copy
+      notes: Includes one landing page.
+  limits:
+    - id: revision-rounds
+      applies_to:
+        - ad-creatives
+        - landing-page
+      type: revision_rounds
+      included_quantity: 2
+      unit: rounds
+      notes: Includes up to two revision rounds across in-scope deliverables.
+  billing_rules:
+    - id: extra-revisions
+      applies_to:
+        - ad-creatives
+        - landing-page
+      trigger: extra_revision_round
+      billing_type: flat_fee
+      amount: 150
+      unit: round
+      notes: Extra revisions billed at 150 each.
+    - id: extra-ad-creatives
+      applies_to:
+        - ad-creatives
+      trigger: extra_deliverable_quantity
+      billing_type: flat_fee
+      amount: 200
+      unit: creative
+      notes: Extra ad creatives billed at 200 each.
+    - id: extra-landing-page-sections
+      applies_to:
+        - landing-page
+      trigger: extra_section
+      billing_type: flat_fee
+      amount: 300
+      unit: section
+      notes: Extra landing page sections billed at 300 each.
+assumptions:
+  - Revision counting is tracked separately from net-new deliverables.
+  - Landing page sections beyond the base page are tracked as incremental sections.
+  - Billing is triggered only when work exceeds the included quantity or revision cap.
+interpretation:
+  revision_limit_type: revision_rounds
+  revision_billing_trigger: extra_revision_round
+  quantity_trigger_by_unit:
+    creative: extra_deliverable_quantity
+    section: extra_section
+  out_of_scope_trigger: out_of_scope
+  compensation_labels:
+    internal_summary: 3 validated scope-creep event(s) prepared for compensation handling.
+    client_summary: We identified completed work that exceeded the agreed marketing package scope.

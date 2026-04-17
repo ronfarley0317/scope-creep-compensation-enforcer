@@ -1,0 +1,63 @@
+{
+  "enforcement_mode": "recommend",
+  "compensation_type": "invoice_line_item",
+  "draft_invoice_line_items": [
+    {
+      "id": "invoice_item_1",
+      "client_id": "demo-client",
+      "event_id": "creep-demo-client-demo-work-001",
+      "description": "Configured quantity limit exceeded for deliverable 'Ad Creatives'.",
+      "quantity": 2.0,
+      "unit": "creative",
+      "rate": 200.0,
+      "amount": 400.0,
+      "currency": "USD",
+      "status": "draft"
+    },
+    {
+      "id": "invoice_item_2",
+      "client_id": "demo-client",
+      "event_id": "creep-demo-client-demo-work-002",
+      "description": "Configured revision limit exceeded for deliverable 'Ad Creatives'.",
+      "quantity": 2,
+      "unit": "rounds",
+      "rate": 150.0,
+      "amount": 300.0,
+      "currency": "USD",
+      "status": "draft"
+    },
+    {
+      "id": "invoice_item_3",
+      "client_id": "demo-client",
+      "event_id": "creep-demo-client-demo-work-003",
+      "description": "Configured quantity limit exceeded for deliverable 'Landing Page'.",
+      "quantity": 1.0,
+      "unit": "section",
+      "rate": 300.0,
+      "amount": 300.0,
+      "currency": "USD",
+      "status": "draft"
+    }
+  ],
+  "draft_change_order_summary": null,
+  "internal_approval_note": {
+    "summary": "3 validated scope-creep event(s) prepared for compensation handling.",
+    "enforcement_mode": "recommend",
+    "recommended_action": "These items are recommended for inclusion in the upcoming invoice.",
+    "action_to_take": "Include these items in the upcoming invoice. Flag for review if needed.",
+    "risks": [
+      "Confirm client pre-approval requirements before issuing final billing."
+    ],
+    "missing_information": [],
+    "known_estimated_amount": 1000.0
+  },
+  "client_facing_summary": {
+    "enforcement_mode": "recommend",
+    "summary": "We identified completed work that exceeded the agreed marketing package scope.",
+    "requested_action": "These items are recommended for inclusion in the upcoming invoice.",
+    "action_to_take": "Action to be taken: include these items in the upcoming invoice. Flag for review if needed.",
+    "pricing_statement": "Known priced impact totals 1000.00 USD.",
+    "timeline_statement": "No schedule change is assumed in this draft."
+  },
+  "human_readable_draft": "Internal Draft\n3 validated scope-creep event(s) prepared for compensation handling. These items are recommended for inclusion in the upcoming invoice. Action: Include these items in the upcoming invoice. Flag for review if needed. Risks: Confirm client pre-approval requirements before issuing final billing.\n\nClient Draft\nWe identified completed work that exceeded the agreed marketing package scope. These items are recommended for inclusion in the upcoming invoice. Action: Action to be taken: include these items in the upcoming invoice. Flag for review if needed. Known priced impact totals 1000.00 USD. No schedule change is assumed in this draft."
+}

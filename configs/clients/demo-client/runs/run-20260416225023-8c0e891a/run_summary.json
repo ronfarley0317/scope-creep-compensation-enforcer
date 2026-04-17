@@ -1,0 +1,996 @@
+{
+  "run_id": "run-20260416225023-8c0e891a",
+  "client": {
+    "client_id": "demo-client",
+    "client_name": "BrightPath Creative",
+    "client_type": "small_marketing_agency",
+    "currency": "USD",
+    "industry": "marketing_agency",
+    "description": "Demo client configuration for a small marketing agency that delivers ad creative and landing page work on fixed-scope contracts with explicit overage pricing.",
+    "contract_rules_path": "configs/clients/demo-client/contract_rules.yaml",
+    "field_mapping_path": "configs/clients/demo-client/field_mapping.yaml",
+    "sample_sow_path": "data/demo/sow.md",
+    "sample_work_log_path": "data/demo/work_log.csv",
+    "scope_source_type": "local_fixture",
+    "work_source_type": "local_fixture",
+    "billing_source_type": "manual",
+    "output_dir": "outputs/demo-client",
+    "default_outputs": {
+      "scope_creep_event_format": "json",
+      "compensation_draft_format": "json",
+      "audit_mode": "strict",
+      "compensation_enforcement_mode": "recommend"
+    },
+    "_client_dir": "configs/clients/demo-client",
+    "_client_root": "configs/clients/demo-client"
+  },
+  "contract_rules": {
+    "client_id": "demo-client",
+    "contract_name": "BrightPath Creative Monthly Campaign Package",
+    "contract_version": 1,
+    "currency": "USD",
+    "scope": {
+      "deliverables": [
+        {
+          "id": "ad-creatives",
+          "name": "Ad Creatives",
+          "included_quantity": 4,
+          "unit": "creatives",
+          "task_categories": [
+            "ad_creative",
+            "static_ad_design",
+            "paid_social_creative"
+          ],
+          "notes": "Includes up to four completed ad creatives for the campaign period."
+        },
+        {
+          "id": "landing-page",
+          "name": "Landing Page",
+          "included_quantity": 1,
+          "unit": "page",
+          "task_categories": [
+            "landing_page",
+            "landing_page_design",
+            "landing_page_copy"
+          ],
+          "notes": "Includes one landing page."
+        }
+      ],
+      "limits": [
+        {
+          "id": "revision-rounds",
+          "applies_to": [
+            "ad-creatives",
+            "landing-page"
+          ],
+          "type": "revision_rounds",
+          "included_quantity": 2,
+          "unit": "rounds",
+          "notes": "Includes up to two revision rounds across in-scope deliverables."
+        }
+      ],
+      "billing_rules": [
+        {
+          "id": "extra-revisions",
+          "applies_to": [
+            "ad-creatives",
+            "landing-page"
+          ],
+          "trigger": "extra_revision_round",
+          "billing_type": "flat_fee",
+          "amount": 150,
+          "unit": "round",
+          "notes": "Extra revisions billed at 150 each."
+        },
+        {
+          "id": "extra-ad-creatives",
+          "applies_to": [
+            "ad-creatives"
+          ],
+          "trigger": "extra_deliverable_quantity",
+          "billing_type": "flat_fee",
+          "amount": 200,
+          "unit": "creative",
+          "notes": "Extra ad creatives billed at 200 each."
+        },
+        {
+          "id": "extra-landing-page-sections",
+          "applies_to": [
+            "landing-page"
+          ],
+          "trigger": "extra_section",
+          "billing_type": "flat_fee",
+          "amount": 300,
+          "unit": "section",
+          "notes": "Extra landing page sections billed at 300 each."
+        }
+      ]
+    },
+    "assumptions": [
+      "Revision counting is tracked separately from net-new deliverables.",
+      "Landing page sections beyond the base page are tracked as incremental sections.",
+      "Billing is triggered only when work exceeds the included quantity or revision cap."
+    ],
+    "interpretation": {
+      "revision_limit_type": "revision_rounds",
+      "revision_billing_trigger": "extra_revision_round",
+      "quantity_trigger_by_unit": {
+        "creative": "extra_deliverable_quantity",
+        "section": "extra_section"
+      },
+      "out_of_scope_trigger": "out_of_scope",
+      "compensation_labels": {
+        "internal_summary": "3 validated scope-creep event(s) prepared for compensation handling.",
+        "client_summary": "We identified completed work that exceeded the agreed marketing package scope."
+      }
+    }
+  },
+  "field_mapping": {
+    "source_type": "structured_documents",
+    "client_id": "demo-client",
+    "field_aliases": {
+      "deliverables": [
+        "deliverable_hint",
+        "deliverable_code",
+        "deliverable"
+      ],
+      "revisions": [
+        "revision_number",
+        "revision_count",
+        "revisions_completed"
+      ],
+      "hours": [
+        "hours",
+        "effort_hours",
+        "logged_hours"
+      ],
+      "assets": [
+        "quantity",
+        "delivered_units",
+        "asset_count"
+      ]
+    },
+    "sow_mapping": {
+      "deliverables_section": "included scope",
+      "deliverable_fields": {
+        "id": [
+          "deliverable_id",
+          "id"
+        ],
+        "extra_quantity_fields": {
+          "section": "included_sections"
+        }
+      }
+    },
+    "work_item_mapping": {
+      "work_item_id": "id",
+      "work_date": "performed_on",
+      "task_category": "category",
+      "deliverable_hint": "deliverables",
+      "description": "description",
+      "hours": "hours",
+      "revision_count": "revisions"
+    },
+    "quantity_mapping": {
+      "by_category": {
+        "ad_creative": {
+          "field": "assets",
+          "unit": "creative"
+        },
+        "landing_page": {
+          "field": "section_count",
+          "unit": "section"
+        }
+      }
+    },
+    "normalization_rules": {
+      "deliverable_aliases": {
+        "ad-creatives": [
+          "ad creative",
+          "ad creatives",
+          "creative",
+          "paid social creative",
+          "static ad",
+          "ad-creatives"
+        ],
+        "landing-page": [
+          "landing page",
+          "lp",
+          "landing page design",
+          "landing-page"
+        ]
+      },
+      "category_aliases": {
+        "ad_creative": [
+          "ad_creative",
+          "static_ad_design",
+          "paid_social_creative"
+        ],
+        "landing_page": [
+          "landing_page",
+          "landing_page_design",
+          "landing_page_copy"
+        ],
+        "revision": [
+          "revision",
+          "revisions",
+          "revision_round"
+        ]
+      },
+      "unit_aliases": {
+        "creative": [
+          "creatives"
+        ],
+        "section": [
+          "sections"
+        ],
+        "round": [
+          "rounds"
+        ]
+      },
+      "quantity_defaults": {}
+    },
+    "audit_fields": [
+      "id",
+      "performed_on",
+      "category",
+      "deliverable_hint",
+      "description",
+      "hours",
+      "revision_number"
+    ]
+  },
+  "scope_input": {
+    "source_type": "local_fixture",
+    "source_reference": "/Users/physis/Documents/scope-creep-enforcer/data/demo/sow.md",
+    "payload": {
+      "metadata": {
+        "client id": "demo-client",
+        "client name": "BrightPath Creative",
+        "currency": "USD",
+        "note": "Additional requests outside the defined scope may be subject to additional billing upon review.",
+        "general clause": "Any work requested after approval that falls outside the agreed deliverables, revision limits, or page structure may be quoted or billed separately at the agency's standard overage rates."
+      },
+      "sections": {
+        "included scope": [
+          {
+            "deliverable_id": "ad-creatives",
+            "name": "Ad Creatives",
+            "included_quantity": "4",
+            "unit": "creatives",
+            "notes": "Includes four paid social ad creatives for the monthly campaign package, based on one approved concept direction."
+          },
+          {
+            "deliverable_id": "landing-page",
+            "name": "Landing Page",
+            "included_quantity": "1",
+            "unit": "page",
+            "included_sections": "1",
+            "notes": "Includes one landing page with one core hero/content section and standard responsive QA."
+          }
+        ],
+        "limits": [
+          {
+            "limit_id": "revision-rounds",
+            "applies_to": "ad-creatives, landing-page",
+            "limit_type": "revision_rounds",
+            "included_quantity": "2",
+            "unit": "rounds",
+            "notes": "Includes two combined revision rounds across all in-scope deliverables after the initial review pass."
+          }
+        ],
+        "overage pricing": [
+          {
+            "rule_id": "extra-revisions",
+            "trigger": "extra_revision_round",
+            "amount": "150",
+            "unit": "round",
+            "notes": "Additional revision rounds are billed at 150 each once included review rounds are exhausted."
+          },
+          {
+            "rule_id": "extra-ad-creatives",
+            "trigger": "extra_ad_creative",
+            "amount": "200",
+            "unit": "creative",
+            "notes": "Additional ad creatives or net-new asset variants are billed at 200 each."
+          },
+          {
+            "rule_id": "extra-landing-page-sections",
+            "trigger": "extra_landing_page_section",
+            "amount": "300",
+            "unit": "section",
+            "notes": "Additional landing page sections beyond the included page structure are billed at 300 each."
+          }
+        ]
+      }
+    }
+  },
+  "work_activity_input": {
+    "source_type": "local_fixture",
+    "source_reference": "/Users/physis/Documents/scope-creep-enforcer/data/demo/work_log.csv",
+    "payload": {
+      "work_items": [
+        {
+          "id": "demo-work-001",
+          "performed_on": "2026-04-01",
+          "category": "ad_creative",
+          "deliverable": "ad-creatives",
+          "description": "Built out 6 final paid-social creatives for the April push. Included two extra variants for remarketing plus some last-minute overlay cleanup.",
+          "hours": "18",
+          "delivered_units": "6",
+          "source_type": "task",
+          "source_reference": "demo-work-001",
+          "source_excerpt": "Built out 6 final paid-social creatives for the April push."
+        },
+        {
+          "id": "demo-work-002",
+          "performed_on": "2026-04-18",
+          "category": "revision",
+          "deliverable": "ad-creatives",
+          "description": "Ran through four revision rounds on the creative set after back-and-forth from client + internal approver. Copy, CTA placement, and disclaimer language all changed a bit.",
+          "hours": "8",
+          "revisions_completed": "4",
+          "source_type": "task",
+          "source_reference": "demo-work-002",
+          "source_excerpt": "Ran through four revision rounds on the creative set."
+        },
+        {
+          "id": "demo-work-003",
+          "performed_on": "2026-04-30",
+          "category": "landing_page",
+          "deliverable": "landing-page",
+          "description": "Added an extra landing page section for testimonials / trust points after the team asked for 'one quick add' late in the week.",
+          "hours": "5",
+          "section_count": "2",
+          "source_type": "task",
+          "source_reference": "demo-work-003",
+          "source_excerpt": "Added an extra landing page section for testimonials and trust points."
+        }
+      ]
+    }
+  },
+  "raw_contract": {
+    "metadata": {
+      "client id": "demo-client",
+      "client name": "BrightPath Creative",
+      "currency": "USD",
+      "note": "Additional requests outside the defined scope may be subject to additional billing upon review.",
+      "general clause": "Any work requested after approval that falls outside the agreed deliverables, revision limits, or page structure may be quoted or billed separately at the agency's standard overage rates."
+    },
+    "sections": {
+      "included scope": [
+        {
+          "deliverable_id": "ad-creatives",
+          "name": "Ad Creatives",
+          "included_quantity": "4",
+          "unit": "creatives",
+          "notes": "Includes four paid social ad creatives for the monthly campaign package, based on one approved concept direction."
+        },
+        {
+          "deliverable_id": "landing-page",
+          "name": "Landing Page",
+          "included_quantity": "1",
+          "unit": "page",
+          "included_sections": "1",
+          "notes": "Includes one landing page with one core hero/content section and standard responsive QA."
+        }
+      ],
+      "limits": [
+        {
+          "limit_id": "revision-rounds",
+          "applies_to": "ad-creatives, landing-page",
+          "limit_type": "revision_rounds",
+          "included_quantity": "2",
+          "unit": "rounds",
+          "notes": "Includes two combined revision rounds across all in-scope deliverables after the initial review pass."
+        }
+      ],
+      "overage pricing": [
+        {
+          "rule_id": "extra-revisions",
+          "trigger": "extra_revision_round",
+          "amount": "150",
+          "unit": "round",
+          "notes": "Additional revision rounds are billed at 150 each once included review rounds are exhausted."
+        },
+        {
+          "rule_id": "extra-ad-creatives",
+          "trigger": "extra_ad_creative",
+          "amount": "200",
+          "unit": "creative",
+          "notes": "Additional ad creatives or net-new asset variants are billed at 200 each."
+        },
+        {
+          "rule_id": "extra-landing-page-sections",
+          "trigger": "extra_landing_page_section",
+          "amount": "300",
+          "unit": "section",
+          "notes": "Additional landing page sections beyond the included page structure are billed at 300 each."
+        }
+      ]
+    }
+  },
+  "raw_work_log": {
+    "work_items": [
+      {
+        "id": "demo-work-001",
+        "performed_on": "2026-04-01",
+        "category": "ad_creative",
+        "deliverable": "ad-creatives",
+        "description": "Built out 6 final paid-social creatives for the April push. Included two extra variants for remarketing plus some last-minute overlay cleanup.",
+        "hours": "18",
+        "delivered_units": "6",
+        "source_type": "task",
+        "source_reference": "demo-work-001",
+        "source_excerpt": "Built out 6 final paid-social creatives for the April push."
+      },
+      {
+        "id": "demo-work-002",
+        "performed_on": "2026-04-18",
+        "category": "revision",
+        "deliverable": "ad-creatives",
+        "description": "Ran through four revision rounds on the creative set after back-and-forth from client + internal approver. Copy, CTA placement, and disclaimer language all changed a bit.",
+        "hours": "8",
+        "revisions_completed": "4",
+        "source_type": "task",
+        "source_reference": "demo-work-002",
+        "source_excerpt": "Ran through four revision rounds on the creative set."
+      },
+      {
+        "id": "demo-work-003",
+        "performed_on": "2026-04-30",
+        "category": "landing_page",
+        "deliverable": "landing-page",
+        "description": "Added an extra landing page section for testimonials / trust points after the team asked for 'one quick add' late in the week.",
+        "hours": "5",
+        "section_count": "2",
+        "source_type": "task",
+        "source_reference": "demo-work-003",
+        "source_excerpt": "Added an extra landing page section for testimonials and trust points."
+      }
+    ]
+  },
+  "normalized_contract": {
+    "client_id": "demo-client",
+    "client_name": "BrightPath Creative",
+    "currency": "USD",
+    "deliverables": [
+      {
+        "id": "ad-creatives",
+        "name": "Ad Creatives",
+        "task_categories": [
+          "ad_creative",
+          "static_ad_design",
+          "paid_social_creative"
+        ],
+        "quantity_limits": {
+          "creative": 4.0
+        },
+        "included_quantity": 4.0,
+        "included_sections": null,
+        "included_hours": null,
+        "included_revisions": null,
+        "notes": "Includes four paid social ad creatives for the monthly campaign package, based on one approved concept direction."
+      },
+      {
+        "id": "landing-page",
+        "name": "Landing Page",
+        "task_categories": [
+          "landing_page",
+          "landing_page_design",
+          "landing_page_copy"
+        ],
+        "quantity_limits": {
+          "page": 1.0,
+          "section": 1.0
+        },
+        "included_quantity": 1.0,
+        "included_sections": 1.0,
+        "included_hours": null,
+        "included_revisions": null,
+        "notes": "Includes one landing page with one core hero/content section and standard responsive QA."
+      }
+    ],
+    "limits": [
+      {
+        "id": "revision-rounds",
+        "limit_type": "revision_rounds",
+        "deliverable_id": "ad-creatives,landing-page",
+        "value": 2.0,
+        "unit": "rounds",
+        "description": "Includes up to two revision rounds across in-scope deliverables.",
+        "applies_to": [
+          "ad-creatives",
+          "landing-page"
+        ]
+      }
+    ],
+    "billing_rules": [
+      {
+        "id": "extra-revisions",
+        "rule_type": "extra_revision_round",
+        "trigger": "extra_revision_round",
+        "rate": 150.0,
+        "unit": "round",
+        "currency": "USD",
+        "description": "Extra revisions billed at 150 each.",
+        "billing_type": "flat_fee",
+        "applies_to": [
+          "ad-creatives",
+          "landing-page"
+        ]
+      },
+      {
+        "id": "extra-ad-creatives",
+        "rule_type": "extra_deliverable_quantity",
+        "trigger": "extra_deliverable_quantity",
+        "rate": 200.0,
+        "unit": "creative",
+        "currency": "USD",
+        "description": "Extra ad creatives billed at 200 each.",
+        "billing_type": "flat_fee",
+        "applies_to": [
+          "ad-creatives"
+        ]
+      },
+      {
+        "id": "extra-landing-page-sections",
+        "rule_type": "extra_section",
+        "trigger": "extra_section",
+        "rate": 300.0,
+        "unit": "section",
+        "currency": "USD",
+        "description": "Extra landing page sections billed at 300 each.",
+        "billing_type": "flat_fee",
+        "applies_to": [
+          "landing-page"
+        ]
+      }
+    ],
+    "exclusions": [],
+    "assumptions": [
+      "Revision counting is tracked separately from net-new deliverables.",
+      "Landing page sections beyond the base page are tracked as incremental sections.",
+      "Billing is triggered only when work exceeds the included quantity or revision cap."
+    ],
+    "interpretation": {
+      "revision_limit_type": "revision_rounds",
+      "revision_billing_trigger": "extra_revision_round",
+      "quantity_trigger_by_unit": {
+        "creative": "extra_deliverable_quantity",
+        "section": "extra_section"
+      },
+      "out_of_scope_trigger": "out_of_scope",
+      "compensation_labels": {
+        "internal_summary": "3 validated scope-creep event(s) prepared for compensation handling.",
+        "client_summary": "We identified completed work that exceeded the agreed marketing package scope."
+      }
+    }
+  },
+  "normalized_work_items": [
+    {
+      "id": "demo-work-001",
+      "deliverable_hint": "ad-creatives",
+      "category": "ad_creative",
+      "description": "Built out 6 final paid-social creatives for the April push. Included two extra variants for remarketing plus some last-minute overlay cleanup.",
+      "hours": 18.0,
+      "source_type": "task",
+      "source_reference": "demo-work-001",
+      "source_excerpt": "Built out 6 final paid-social creatives for the April push.",
+      "quantity": 6.0,
+      "quantity_unit": "creative",
+      "section_count": null,
+      "revision_number": null,
+      "performed_on": "2026-04-01"
+    },
+    {
+      "id": "demo-work-002",
+      "deliverable_hint": "ad-creatives",
+      "category": "revision",
+      "description": "Ran through four revision rounds on the creative set after back-and-forth from client + internal approver. Copy, CTA placement, and disclaimer language all changed a bit.",
+      "hours": 8.0,
+      "source_type": "task",
+      "source_reference": "demo-work-002",
+      "source_excerpt": "Ran through four revision rounds on the creative set.",
+      "quantity": null,
+      "quantity_unit": null,
+      "section_count": null,
+      "revision_number": 4,
+      "performed_on": "2026-04-18"
+    },
+    {
+      "id": "demo-work-003",
+      "deliverable_hint": "landing-page",
+      "category": "landing_page",
+      "description": "Added an extra landing page section for testimonials / trust points after the team asked for 'one quick add' late in the week.",
+      "hours": 5.0,
+      "source_type": "task",
+      "source_reference": "demo-work-003",
+      "source_excerpt": "Added an extra landing page section for testimonials and trust points.",
+      "quantity": 2.0,
+      "quantity_unit": "section",
+      "section_count": null,
+      "revision_number": null,
+      "performed_on": "2026-04-30"
+    }
+  ],
+  "comparison": {
+    "in_scope_items": [],
+    "out_of_scope_items": [],
+    "exceeded_limits": [
+      {
+        "work_item_id": "demo-work-001",
+        "limit_id": "ad-creatives-creative",
+        "limit_type": "extra_deliverable_quantity",
+        "allowed_value": 4.0,
+        "actual_value": 6.0,
+        "unit": "creative",
+        "reason": "Configured quantity limit exceeded for Ad Creatives."
+      },
+      {
+        "work_item_id": "demo-work-002",
+        "limit_id": "revision-rounds",
+        "limit_type": "revision_rounds",
+        "allowed_value": 2.0,
+        "actual_value": 4,
+        "unit": "rounds",
+        "reason": "Configured revision limit exceeded for Ad Creatives."
+      },
+      {
+        "work_item_id": "demo-work-003",
+        "limit_id": "landing-page-section",
+        "limit_type": "extra_section",
+        "allowed_value": 1.0,
+        "actual_value": 2.0,
+        "unit": "section",
+        "reason": "Configured quantity limit exceeded for Landing Page."
+      }
+    ],
+    "revenue_impact_estimate": {
+      "currency": "USD",
+      "estimated_amount": 1000.0,
+      "pricing_basis": "Sum of config-driven billable event estimates.",
+      "pricing_confidence": "high",
+      "notes": ""
+    },
+    "creep_events": [
+      {
+        "event_id": "creep-demo-client-demo-work-001",
+        "client_id": "demo-client",
+        "work_item_id": "demo-work-001",
+        "event_type": "extra_deliverable_quantity",
+        "normalized_category": "ad_creative",
+        "source_type": "task",
+        "source_reference": "demo-work-001",
+        "source_excerpt": "Built out 6 final paid-social creatives for the April push.",
+        "reason": "Configured quantity limit exceeded for deliverable 'Ad Creatives'.",
+        "scope_reference_id": "ad-creatives",
+        "rule_code": "extra_deliverable_quantity",
+        "agreed_allowance": 4.0,
+        "actual_delivered_amount": 6.0,
+        "exceeded_amount": 2.0,
+        "billing_rule_applied": "extra-ad-creatives",
+        "revenue_impact_calculation": "2 x 200 per creative = 400",
+        "system_explanation": "The normalized category 'ad_creative' exceeded the agreed allowance of 4 creative by delivering 6 creative, which is 2 creative over the contract allowance. Billing rule applied: extra-ad-creatives.",
+        "client_explanation": "The project included 4 creative for ad creatives. Work delivered exceeded that amount by 2 creative, for a total of 6 creative. This results in an additional charge of USD 400.00.",
+        "billable_hours": null,
+        "billable_quantity": 2.0,
+        "billable_unit": "creative",
+        "rate": 200.0,
+        "estimated_amount": 400.0,
+        "currency": "USD",
+        "id": "creep-demo-client-demo-work-001"
+      },
+      {
+        "event_id": "creep-demo-client-demo-work-002",
+        "client_id": "demo-client",
+        "work_item_id": "demo-work-002",
+        "event_type": "limit_exceeded",
+        "normalized_category": "revision",
+        "source_type": "task",
+        "source_reference": "demo-work-002",
+        "source_excerpt": "Ran through four revision rounds on the creative set.",
+        "reason": "Configured revision limit exceeded for deliverable 'Ad Creatives'.",
+        "scope_reference_id": "ad-creatives",
+        "rule_code": "included_revisions_exceeded",
+        "agreed_allowance": 2.0,
+        "actual_delivered_amount": 4.0,
+        "exceeded_amount": 2.0,
+        "billing_rule_applied": "extra-revisions",
+        "revenue_impact_calculation": "2 x 150 per rounds = 300",
+        "system_explanation": "The normalized category 'revision' exceeded the agreed allowance of 2 rounds by delivering 4 rounds, which is 2 rounds over the contract allowance. Billing rule applied: extra-revisions.",
+        "client_explanation": "The project included 2 rounds for ad creatives. Work delivered exceeded that amount by 2 rounds, for a total of 4 rounds. This results in an additional charge of USD 300.00.",
+        "billable_hours": null,
+        "billable_quantity": 2,
+        "billable_unit": "rounds",
+        "rate": 150.0,
+        "estimated_amount": 300.0,
+        "currency": "USD",
+        "id": "creep-demo-client-demo-work-002"
+      },
+      {
+        "event_id": "creep-demo-client-demo-work-003",
+        "client_id": "demo-client",
+        "work_item_id": "demo-work-003",
+        "event_type": "extra_section",
+        "normalized_category": "landing_page",
+        "source_type": "task",
+        "source_reference": "demo-work-003",
+        "source_excerpt": "Added an extra landing page section for testimonials and trust points.",
+        "reason": "Configured quantity limit exceeded for deliverable 'Landing Page'.",
+        "scope_reference_id": "landing-page",
+        "rule_code": "extra_section",
+        "agreed_allowance": 1.0,
+        "actual_delivered_amount": 2.0,
+        "exceeded_amount": 1.0,
+        "billing_rule_applied": "extra-landing-page-sections",
+        "revenue_impact_calculation": "1 x 300 per section = 300",
+        "system_explanation": "The normalized category 'landing_page' exceeded the agreed allowance of 1 section by delivering 2 section, which is 1 section over the contract allowance. Billing rule applied: extra-landing-page-sections.",
+        "client_explanation": "The project included 1 section for landing page. Work delivered exceeded that amount by 1 section, for a total of 2 section. This results in an additional charge of USD 300.00.",
+        "billable_hours": null,
+        "billable_quantity": 1.0,
+        "billable_unit": "section",
+        "rate": 300.0,
+        "estimated_amount": 300.0,
+        "currency": "USD",
+        "id": "creep-demo-client-demo-work-003"
+      }
+    ]
+  },
+  "compensation": {
+    "enforcement_mode": "recommend",
+    "compensation_type": "invoice_line_item",
+    "draft_invoice_line_items": [
+      {
+        "id": "invoice_item_1",
+        "client_id": "demo-client",
+        "event_id": "creep-demo-client-demo-work-001",
+        "description": "Configured quantity limit exceeded for deliverable 'Ad Creatives'.",
+        "quantity": 2.0,
+        "unit": "creative",
+        "rate": 200.0,
+        "amount": 400.0,
+        "currency": "USD",
+        "status": "draft"
+      },
+      {
+        "id": "invoice_item_2",
+        "client_id": "demo-client",
+        "event_id": "creep-demo-client-demo-work-002",
+        "description": "Configured revision limit exceeded for deliverable 'Ad Creatives'.",
+        "quantity": 2,
+        "unit": "rounds",
+        "rate": 150.0,
+        "amount": 300.0,
+        "currency": "USD",
+        "status": "draft"
+      },
+      {
+        "id": "invoice_item_3",
+        "client_id": "demo-client",
+        "event_id": "creep-demo-client-demo-work-003",
+        "description": "Configured quantity limit exceeded for deliverable 'Landing Page'.",
+        "quantity": 1.0,
+        "unit": "section",
+        "rate": 300.0,
+        "amount": 300.0,
+        "currency": "USD",
+        "status": "draft"
+      }
+    ],
+    "draft_change_order_summary": null,
+    "internal_approval_note": {
+      "summary": "3 validated scope-creep event(s) prepared for compensation handling.",
+      "enforcement_mode": "recommend",
+      "recommended_action": "These items are recommended for inclusion in the upcoming invoice.",
+      "action_to_take": "Include these items in the upcoming invoice. Flag for review if needed.",
+      "risks": [
+        "Confirm client pre-approval requirements before issuing final billing."
+      ],
+      "missing_information": [],
+      "known_estimated_amount": 1000.0
+    },
+    "client_facing_summary": {
+      "enforcement_mode": "recommend",
+      "summary": "We identified completed work that exceeded the agreed marketing package scope.",
+      "requested_action": "These items are recommended for inclusion in the upcoming invoice.",
+      "action_to_take": "Action to be taken: include these items in the upcoming invoice. Flag for review if needed.",
+      "pricing_statement": "Known priced impact totals 1000.00 USD.",
+      "timeline_statement": "No schedule change is assumed in this draft."
+    },
+    "human_readable_draft": "Internal Draft\n3 validated scope-creep event(s) prepared for compensation handling. These items are recommended for inclusion in the upcoming invoice. Action: Include these items in the upcoming invoice. Flag for review if needed. Risks: Confirm client pre-approval requirements before issuing final billing.\n\nClient Draft\nWe identified completed work that exceeded the agreed marketing package scope. These items are recommended for inclusion in the upcoming invoice. Action: Action to be taken: include these items in the upcoming invoice. Flag for review if needed. Known priced impact totals 1000.00 USD. No schedule change is assumed in this draft."
+  },
+  "invoice_artifacts": {
+    "invoice_json": {
+      "invoice_id": "invoice-demo-client-2026-04-30",
+      "client_name": "BrightPath Creative",
+      "date": "2026-04-30",
+      "line_items": [
+        {
+          "description": "The project included 4 creative for ad creatives. Work delivered exceeded that amount by 2 creative, for a total of 6 creative. This results in an additional charge of USD 400.00.",
+          "category": "ad_creative",
+          "quantity": 2.0,
+          "unit_price": 200.0,
+          "total": 400.0
+        },
+        {
+          "description": "The project included 2 rounds for ad creatives. Work delivered exceeded that amount by 2 rounds, for a total of 4 rounds. This results in an additional charge of USD 300.00.",
+          "category": "revision",
+          "quantity": 2,
+          "unit_price": 150.0,
+          "total": 300.0
+        },
+        {
+          "description": "The project included 1 section for landing page. Work delivered exceeded that amount by 1 section, for a total of 2 section. This results in an additional charge of USD 300.00.",
+          "category": "landing_page",
+          "quantity": 1.0,
+          "unit_price": 300.0,
+          "total": 300.0
+        }
+      ],
+      "total_amount": 1000.0
+    },
+    "invoice_markdown": "# Invoice Draft: BrightPath Creative\n\n- Date: 2026-04-30\n\n## Line Items\n- The project included 4 creative for ad creatives. Work delivered exceeded that amount by 2 creative, for a total of 6 creative. This results in an additional charge of USD 400.00. (ad_creative): 2 x 200 = 400.00\n- The project included 2 rounds for ad creatives. Work delivered exceeded that amount by 2 rounds, for a total of 4 rounds. This results in an additional charge of USD 300.00. (revision): 2 x 150 = 300.00\n- The project included 1 section for landing page. Work delivered exceeded that amount by 1 section, for a total of 2 section. This results in an additional charge of USD 300.00. (landing_page): 1 x 300 = 300.00\n\n## Total Amount Due\n1000.00\n\n## Notes\nThis draft reflects additional completed work identified through the configured scope review process."
+  },
+  "billing_artifacts": {
+    "billing_package_json": {
+      "client_id": "demo-client",
+      "client_name": "BrightPath Creative",
+      "review_status": "pending",
+      "recommended_action": "These items are recommended for inclusion in the upcoming invoice.",
+      "invoice_file_references": {
+        "invoice_json": "configs/clients/demo-client/outputs/demo-client-invoice.json",
+        "invoice_markdown": "configs/clients/demo-client/outputs/demo-client-invoice.md"
+      },
+      "invoice_id": "invoice-demo-client-2026-04-30",
+      "total_amount": 1000.0
+    },
+    "billing_cover_markdown": "# Billing Cover: BrightPath Creative\n\n- Invoice ID: invoice-demo-client-2026-04-30\n- Invoice Date: 2026-04-30\n- Review Status: pending\n- Recommended Action: These items are recommended for inclusion in the upcoming invoice.\n- Total Amount: 1000.00\n\n## Invoice Files\n- JSON: configs/clients/demo-client/outputs/demo-client-invoice.json\n- Markdown: configs/clients/demo-client/outputs/demo-client-invoice.md\n\n## Notes\nThis package is prepared for manual billing review and send."
+  },
+  "source_lanes": {
+    "scope_source_type": "local_fixture",
+    "work_source_type": "local_fixture",
+    "billing_source_type": "manual"
+  },
+  "source_healthcheck": {
+    "scope": {
+      "adapter": "local_fixture",
+      "scope_available": true,
+      "work_available": true,
+      "scope_reference": "/Users/physis/Documents/scope-creep-enforcer/data/demo/sow.md",
+      "work_reference": "/Users/physis/Documents/scope-creep-enforcer/data/demo/work_log.csv",
+      "healthy": true
+    },
+    "work": {
+      "adapter": "local_fixture",
+      "scope_available": true,
+      "work_available": true,
+      "scope_reference": "/Users/physis/Documents/scope-creep-enforcer/data/demo/sow.md",
+      "work_reference": "/Users/physis/Documents/scope-creep-enforcer/data/demo/work_log.csv",
+      "healthy": true
+    },
+    "billing": {
+      "adapter": "manual",
+      "healthy": true,
+      "mode": "human_review",
+      "client_id": "demo-client"
+    }
+  },
+  "overdelivery_summary": {
+    "overall_agreed_allowance": 7.0,
+    "overall_actual_delivered_amount": 12.0,
+    "overall_overdelivery_percent": 71.4,
+    "category_insights": [
+      {
+        "category": "revision",
+        "agreed_allowance": 2.0,
+        "actual_delivered_amount": 4.0,
+        "overdelivery_percent": 100.0,
+        "insight": "This represents a 100.0% over-delivery on revision work (4 delivered versus 2 agreed)."
+      },
+      {
+        "category": "landing_page",
+        "agreed_allowance": 1.0,
+        "actual_delivered_amount": 2.0,
+        "overdelivery_percent": 100.0,
+        "insight": "This represents a 100.0% over-delivery on landing page work (2 delivered versus 1 agreed)."
+      },
+      {
+        "category": "ad_creative",
+        "agreed_allowance": 4.0,
+        "actual_delivered_amount": 6.0,
+        "overdelivery_percent": 50.0,
+        "insight": "This represents a 50.0% over-delivery on ad creative work (6 delivered versus 4 agreed)."
+      }
+    ]
+  },
+  "revenue_leakage_projection": {
+    "currency": "USD",
+    "event_count": 3,
+    "observation_start_date": "2026-04-01",
+    "observation_end_date": "2026-04-30",
+    "observation_span_days": 30,
+    "projection_cadence": "weekly",
+    "projected_monthly_leakage": 1013.83,
+    "methodology_explanation": "Calculated from 3 scope-creep event(s) across 30 days using a weekly leakage rate of USD 233.33, extrapolated over 4.345 weeks.",
+    "confidence_level": "high",
+    "recovery_opportunity_min": 861.76,
+    "recovery_opportunity_max": 1013.83,
+    "recovery_explanation": "Recovery range applies a 85%-100% capture band based on high confidence in the observed pattern."
+  },
+  "output_paths": {
+    "client_root": "configs/clients/demo-client",
+    "run_dir": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a",
+    "output_dir": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a",
+    "comparison": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/comparison.json",
+    "compensation": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/compensation.json",
+    "run_summary": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/run_summary.json",
+    "run_markdown_summary": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/summary.md",
+    "run_client_report": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/scope-creep-report.md",
+    "run_invoice_json": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/demo-client-invoice.json",
+    "run_invoice_markdown": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/demo-client-invoice.md",
+    "run_billing_package_json": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/demo-client-billing-package.json",
+    "run_billing_cover_markdown": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/demo-client-billing-cover.md",
+    "client_report": "configs/clients/demo-client/outputs/demo-client-scope-creep-report.md",
+    "invoice_json": "configs/clients/demo-client/outputs/demo-client-invoice.json",
+    "invoice_markdown": "configs/clients/demo-client/outputs/demo-client-invoice.md",
+    "billing_package_json": "configs/clients/demo-client/billing/demo-client-billing-package.json",
+    "billing_cover_markdown": "configs/clients/demo-client/billing/demo-client-billing-cover.md",
+    "delivery_package_json": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/demo-client-delivery-package.json",
+    "delivery_summary_markdown": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/demo-client-delivery-summary.md",
+    "run_history": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/run_metadata.json"
+  },
+  "terminal_summary": "Client: BrightPath Creative (demo-client)\nNormalized work items: 3\nIn-scope items: 0\nOut-of-scope items: 0\nExceeded limits: 3\nScope-creep events: 3\nEstimated billable amount: USD 1000.00\nCompensation type: invoice_line_item\nDraft invoice items: 3\nOutputs written to: configs/clients/demo-client/runs/run-20260416225023-8c0e891a",
+  "markdown_summary": "# Demo Client Scope Creep Summary\n\n- Client: BrightPath Creative (`demo-client`)\n- Scope-creep events: 3\n- Estimated billable amount: USD 1000.00\n- Compensation type: invoice_line_item\n\n## Decision Trace\n\n### creep-demo-client-demo-work-001\n- Category: `ad_creative`\n- Agreed allowance: 4.0\n- Actual delivered amount: 6.0\n- Exceeded amount: 2.0\n- Billing rule applied: `extra-ad-creatives`\n- Source type: `task`\n- Source reference: `demo-work-001`\n- Source excerpt: Built out 6 final paid-social creatives for the April push.\n- Revenue impact calculation: `2 x 200 per creative = 400`\n- System explanation: The normalized category 'ad_creative' exceeded the agreed allowance of 4 creative by delivering 6 creative, which is 2 creative over the contract allowance. Billing rule applied: extra-ad-creatives.\n- Client explanation: The project included 4 creative for ad creatives. Work delivered exceeded that amount by 2 creative, for a total of 6 creative. This results in an additional charge of USD 400.00.\n\n### creep-demo-client-demo-work-002\n- Category: `revision`\n- Agreed allowance: 2.0\n- Actual delivered amount: 4.0\n- Exceeded amount: 2.0\n- Billing rule applied: `extra-revisions`\n- Source type: `task`\n- Source reference: `demo-work-002`\n- Source excerpt: Ran through four revision rounds on the creative set.\n- Revenue impact calculation: `2 x 150 per rounds = 300`\n- System explanation: The normalized category 'revision' exceeded the agreed allowance of 2 rounds by delivering 4 rounds, which is 2 rounds over the contract allowance. Billing rule applied: extra-revisions.\n- Client explanation: The project included 2 rounds for ad creatives. Work delivered exceeded that amount by 2 rounds, for a total of 4 rounds. This results in an additional charge of USD 300.00.\n\n### creep-demo-client-demo-work-003\n- Category: `landing_page`\n- Agreed allowance: 1.0\n- Actual delivered amount: 2.0\n- Exceeded amount: 1.0\n- Billing rule applied: `extra-landing-page-sections`\n- Source type: `task`\n- Source reference: `demo-work-003`\n- Source excerpt: Added an extra landing page section for testimonials and trust points.\n- Revenue impact calculation: `1 x 300 per section = 300`\n- System explanation: The normalized category 'landing_page' exceeded the agreed allowance of 1 section by delivering 2 section, which is 1 section over the contract allowance. Billing rule applied: extra-landing-page-sections.\n- Client explanation: The project included 1 section for landing page. Work delivered exceeded that amount by 1 section, for a total of 2 section. This results in an additional charge of USD 300.00.\n",
+  "client_report": "# Scope Creep Report: BrightPath Creative\n\n## Executive Summary\nThe demo workflow identified 3 scope-creep event(s) for BrightPath Creative. Based on the configured contract rules, the current estimated billable impact is USD 1000.00.\nOverall, this reflects a 71.4% over-delivery against the agreed scope tracked in this reporting period.\n- This represents a 100.0% over-delivery on revision work (4 delivered versus 2 agreed).\n- This represents a 100.0% over-delivery on landing page work (2 delivered versus 1 agreed).\n- This represents a 50.0% over-delivery on ad creative work (6 delivered versus 4 agreed).\n\n## Scope-Creep Events Detected\n### Event 1\n- Event ID: `creep-demo-client-demo-work-001`\n- Summary: The project included 4 creative for ad creatives. Work delivered exceeded that amount by 2 creative, for a total of 6 creative. This results in an additional charge of USD 400.00.\n- Agreed scope amount: 4.0\n- Delivered amount: 6.0\n- Additional amount beyond scope: 2.0\n- Source reference: `task` / `demo-work-001`\n- Source excerpt: Built out 6 final paid-social creatives for the April push.\n\n### Event 2\n- Event ID: `creep-demo-client-demo-work-002`\n- Summary: The project included 2 rounds for ad creatives. Work delivered exceeded that amount by 2 rounds, for a total of 4 rounds. This results in an additional charge of USD 300.00.\n- Agreed scope amount: 2.0\n- Delivered amount: 4.0\n- Additional amount beyond scope: 2.0\n- Source reference: `task` / `demo-work-002`\n- Source excerpt: Ran through four revision rounds on the creative set.\n\n### Event 3\n- Event ID: `creep-demo-client-demo-work-003`\n- Summary: The project included 1 section for landing page. Work delivered exceeded that amount by 1 section, for a total of 2 section. This results in an additional charge of USD 300.00.\n- Agreed scope amount: 1.0\n- Delivered amount: 2.0\n- Additional amount beyond scope: 1.0\n- Source reference: `task` / `demo-work-003`\n- Source excerpt: Added an extra landing page section for testimonials and trust points.\n\n## Revenue Impact\n- Estimated total revenue impact: USD 1000.00\n- Pricing basis: Sum of config-driven billable event estimates.\n- Pricing confidence: high\n\n## Estimated Monthly Revenue Leakage\nBased on current activity patterns, projected monthly leakage is approximately USD 1013.83.\n- Methodology: Calculated from 3 scope-creep event(s) across 30 days using a weekly leakage rate of USD 233.33, extrapolated over 4.345 weeks.\n- Confidence level: high\n\n## Recovery Opportunity\nIf similar patterns persist, implementing automated enforcement could recover USD 861.76-USD 1013.83 per month.\n- Recovery basis: Recovery range applies a 85%-100% capture band based on high confidence in the observed pattern.\n\n## Enforcement Impact\n- Without Enforcement:\nAdditional work completed without compensation\n- With Enforcement:\nUSD 1000.00 captured and billed\n- Net Impact:\n+ USD 1000.00 recovered revenue\n\n## Recommended Compensation Actions\n- Compensation type: `invoice_line_item`\n- Client-facing recommendation: These items are recommended for inclusion in the upcoming invoice.\n- Draft invoice item `invoice_item_1`: 2 creative x 200 = USD 400.00\n- Draft invoice item `invoice_item_2`: 2 rounds x 150 = USD 300.00\n- Draft invoice item `invoice_item_3`: 1 section x 300 = USD 300.00\n\n## Assumptions and Notes\n- Revision counting is tracked separately from net-new deliverables.\n- Landing page sections beyond the base page are tracked as incremental sections.\n- Billing is triggered only when work exceeds the included quantity or revision cap.\n- This report is generated from normalized SOW and work-log inputs using deterministic contract rules.\n- The audit trace below maps each compensation recommendation to a specific normalized event.\n\n## Audit Trace Table\n| Event ID | Category | Allowance | Actual | Exceeded | Source | Source Excerpt | Billing Rule | Revenue Calculation |\n| --- | --- | ---: | ---: | ---: | --- | --- | --- | --- |\n| `creep-demo-client-demo-work-001` | `ad_creative` | 4.0 | 6.0 | 2.0 | `task` / `demo-work-001` | Built out 6 final paid-social creatives for the April push. | `extra-ad-creatives` | `2 x 200 per creative = 400` |\n| `creep-demo-client-demo-work-002` | `revision` | 2.0 | 4.0 | 2.0 | `task` / `demo-work-002` | Ran through four revision rounds on the creative set. | `extra-revisions` | `2 x 150 per rounds = 300` |\n| `creep-demo-client-demo-work-003` | `landing_page` | 1.0 | 2.0 | 1.0 | `task` / `demo-work-003` | Added an extra landing page section for testimonials and trust points. | `extra-landing-page-sections` | `1 x 300 per section = 300` |\n",
+  "delivery_artifacts": {
+    "delivery_package_json": {
+      "client_name": "BrightPath Creative",
+      "generated_at": "2026-04-16T22:50:23",
+      "included_artifacts": {
+        "scope_creep_report_path": "configs/clients/demo-client/outputs/demo-client-scope-creep-report.md",
+        "invoice_markdown_path": "configs/clients/demo-client/outputs/demo-client-invoice.md",
+        "invoice_json_path": "configs/clients/demo-client/outputs/demo-client-invoice.json",
+        "billing_cover_path": "configs/clients/demo-client/billing/demo-client-billing-cover.md",
+        "billing_package_path": "configs/clients/demo-client/billing/demo-client-billing-package.json"
+      },
+      "delivery_status": "ready_for_review",
+      "recommended_recipient_type": "finance"
+    },
+    "delivery_summary_markdown": "# Delivery Summary: BrightPath Creative\n\n## What Was Detected\nThe workflow detected 3 scope-creep event(s) and 3 exceeded-limit finding(s).\n\n## Total Billable Impact\nUSD 1000.00\n\n## Files Ready For Review/Send\n- scope_creep_report_path: configs/clients/demo-client/outputs/demo-client-scope-creep-report.md\n- invoice_markdown_path: configs/clients/demo-client/outputs/demo-client-invoice.md\n- invoice_json_path: configs/clients/demo-client/outputs/demo-client-invoice.json\n- billing_cover_path: configs/clients/demo-client/billing/demo-client-billing-cover.md\n- billing_package_path: configs/clients/demo-client/billing/demo-client-billing-package.json\n\n## Recommended Next Action\n- Recipient type: finance\n- Action: These items are recommended for inclusion in the upcoming invoice."
+  },
+  "run_history": {
+    "run_id": "run-20260416225023-8c0e891a",
+    "client_name": "BrightPath Creative",
+    "started_at": "2026-04-16T22:50:23",
+    "completed_at": "2026-04-16T22:50:23",
+    "status": "success",
+    "scope_source_type": "local_fixture",
+    "work_source_type": "local_fixture",
+    "billing_source_type": "manual",
+    "total_scope_creep_events": 3,
+    "total_billable_impact": 1000.0,
+    "generated_artifacts": {
+      "client_root": "configs/clients/demo-client",
+      "run_dir": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a",
+      "output_dir": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a",
+      "comparison": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/comparison.json",
+      "compensation": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/compensation.json",
+      "run_summary": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/run_summary.json",
+      "run_markdown_summary": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/summary.md",
+      "run_client_report": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/scope-creep-report.md",
+      "run_invoice_json": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/demo-client-invoice.json",
+      "run_invoice_markdown": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/demo-client-invoice.md",
+      "run_billing_package_json": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/demo-client-billing-package.json",
+      "run_billing_cover_markdown": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/demo-client-billing-cover.md",
+      "client_report": "configs/clients/demo-client/outputs/demo-client-scope-creep-report.md",
+      "invoice_json": "configs/clients/demo-client/outputs/demo-client-invoice.json",
+      "invoice_markdown": "configs/clients/demo-client/outputs/demo-client-invoice.md",
+      "billing_package_json": "configs/clients/demo-client/billing/demo-client-billing-package.json",
+      "billing_cover_markdown": "configs/clients/demo-client/billing/demo-client-billing-cover.md",
+      "delivery_package_json": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/demo-client-delivery-package.json",
+      "delivery_summary_markdown": "configs/clients/demo-client/runs/run-20260416225023-8c0e891a/demo-client-delivery-summary.md"
+    },
+    "error_message": null
+  }
+}

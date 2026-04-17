@@ -29,7 +29,7 @@ def _build_parser() -> argparse.ArgumentParser:
     group.add_argument("--all-clients", action="store_true", help="Run every client under configs/clients/.")
     parser.add_argument(
         "--configs-root",
-        default="configs/clients",
+        default="clients",
         help="Root directory containing client configuration folders.",
     )
     return parser
@@ -51,7 +51,11 @@ def _run_all_clients(configs_root: Path) -> int:
         print(f"Configs root not found: {configs_root}", file=sys.stderr)
         return 1
 
-    client_dirs = [path for path in configs_root.iterdir() if path.is_dir() and (path / "client.yaml").exists()]
+    client_dirs = [
+        path
+        for path in configs_root.iterdir()
+        if path.is_dir() and ((path / "config" / "client.yaml").exists() or (path / "client.yaml").exists())
+    ]
     if not client_dirs:
         print(f"No client configs found under: {configs_root}", file=sys.stderr)
         return 1
