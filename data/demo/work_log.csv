@@ -1,0 +1,4 @@
+id,performed_on,category,deliverable,description,hours,revisions_completed,delivered_units,section_count,source_type,source_reference,source_excerpt
+demo-work-001,2026-04-01,ad_creative,ad-creatives,"Delivered six final ad creatives for the April paid social launch, including resized export variants and copy-safe overlays.",18,,6,,task,demo-work-001,"Delivered six final ad creatives for the April paid social launch."
+demo-work-002,2026-04-18,revision,ad-creatives,"Completed four revision rounds across the creative set after stakeholder review cycles covering headlines, CTA hierarchy, and compliance edits.",8,4,,,task,demo-work-002,"Completed four revision rounds across campaign assets."
+demo-work-003,2026-04-30,landing_page,landing-page,"Added one extra landing page section for testimonial proof and pricing reassurance after launch-week feedback.",5,,,2,task,demo-work-003,"Added one extra landing page section requested by the client."

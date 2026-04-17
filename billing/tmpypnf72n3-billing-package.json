@@ -1,0 +1,12 @@
+{
+  "client_id": "tmpypnf72n3",
+  "client_name": "Mapping Test Client",
+  "review_status": "pending",
+  "recommended_action": "Please review the identified work and confirm approval for compensation handling.",
+  "invoice_file_references": {
+    "invoice_json": "/Users/physis/Documents/scope-creep-enforcer/invoices/tmpypnf72n3-invoice.json",
+    "invoice_markdown": "/Users/physis/Documents/scope-creep-enforcer/invoices/tmpypnf72n3-invoice.md"
+  },
+  "invoice_id": "invoice-demo-2026-04-16",
+  "total_amount": 0
+}

@@ -1,0 +1,14 @@
+{
+  "run_id": "run-20260416201920-dbd6f49c",
+  "client_name": "Broken Client",
+  "started_at": "2026-04-16T20:19:20",
+  "completed_at": "2026-04-16T20:19:20",
+  "status": "failure",
+  "scope_source_type": "local_fixture",
+  "work_source_type": "local_fixture",
+  "billing_source_type": "unsupported",
+  "total_scope_creep_events": 0,
+  "total_billable_impact": 0.0,
+  "generated_artifacts": {},
+  "error_message": "Unsupported billing adapter type: unsupported"
+}

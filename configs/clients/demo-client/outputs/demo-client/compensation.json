@@ -1,0 +1,46 @@
+{
+  "compensation_type": "invoice_line_item",
+  "draft_invoice_line_items": [
+    {
+      "id": "invoice_item_1",
+      "client_id": "demo-client",
+      "event_id": "creep_1",
+      "description": "Configured revision limit exceeded for deliverable 'Ad Creatives'.",
+      "quantity": 2,
+      "unit": "rounds",
+      "rate": 150.0,
+      "amount": 300.0,
+      "currency": "USD",
+      "status": "draft"
+    },
+    {
+      "id": "invoice_item_2",
+      "client_id": "demo-client",
+      "event_id": "creep_2",
+      "description": "Configured quantity limit exceeded for deliverable 'Landing Page'.",
+      "quantity": 1.0,
+      "unit": "section",
+      "rate": 300.0,
+      "amount": 300.0,
+      "currency": "USD",
+      "status": "draft"
+    }
+  ],
+  "draft_change_order_summary": null,
+  "internal_approval_note": {
+    "summary": "3 validated scope-creep event(s) prepared for compensation handling.",
+    "recommended_action": "Approve draft invoice items for the next billing cycle.",
+    "risks": [
+      "Confirm client pre-approval requirements before issuing final billing."
+    ],
+    "missing_information": [],
+    "known_estimated_amount": 600.0
+  },
+  "client_facing_summary": {
+    "summary": "We identified completed work that exceeded the agreed marketing package scope.",
+    "requested_action": "Please confirm inclusion of these items on the upcoming invoice.",
+    "pricing_statement": "Known priced impact totals 600.00 USD.",
+    "timeline_statement": "No schedule change is assumed in this draft."
+  },
+  "human_readable_draft": "Internal Draft\n3 validated scope-creep event(s) prepared for compensation handling. Approve draft invoice items for the next billing cycle. Risks: Confirm client pre-approval requirements before issuing final billing.\n\nClient Draft\nWe identified completed work that exceeded the agreed marketing package scope. Please confirm inclusion of these items on the upcoming invoice. Known priced impact totals 600.00 USD. No schedule change is assumed in this draft."
+}

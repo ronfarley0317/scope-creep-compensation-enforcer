@@ -1,0 +1,43 @@
+{
+  "client_id": "demo-client",
+  "period": {
+    "start_date": "2026-04-01",
+    "end_date": "2026-04-30"
+  },
+  "summary": {
+    "ad_creatives_delivered": 6,
+    "revision_rounds_completed": 4,
+    "landing_page_sections_requested": 2
+  },
+  "work_items": [
+    {
+      "id": "demo-work-001",
+      "deliverable_hint": "ad-creatives",
+      "category": "ad_creative",
+      "description": "Delivered six final ad creatives for the campaign.",
+      "quantity": 6,
+      "hours": 18,
+      "performed_on": "2026-04-28"
+    },
+    {
+      "id": "demo-work-002",
+      "deliverable_hint": "ad-creatives",
+      "category": "revision",
+      "description": "Completed four revision rounds across campaign assets.",
+      "quantity": 4,
+      "revision_number": 4,
+      "hours": 8,
+      "performed_on": "2026-04-29"
+    },
+    {
+      "id": "demo-work-003",
+      "deliverable_hint": "landing-page",
+      "category": "landing_page",
+      "description": "Added one extra landing page section requested by the client.",
+      "section_count": 2,
+      "quantity": 2,
+      "hours": 5,
+      "performed_on": "2026-04-30"
+    }
+  ]
+}

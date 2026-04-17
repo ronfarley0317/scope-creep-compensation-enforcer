@@ -1,0 +1,17 @@
+{
+  "batch_id": "batch-20260416203353-f090d352",
+  "started_at": "2026-04-16T20:33:53",
+  "completed_at": "2026-04-16T20:33:53",
+  "total_clients_attempted": 1,
+  "total_clients_succeeded": 1,
+  "total_clients_failed": 0,
+  "per_client_results": [
+    {
+      "client_name": "BrightPath Creative",
+      "run_id": "run-20260416203353-3cb07627",
+      "status": "success",
+      "total_scope_creep_events": 3,
+      "total_billable_impact": 1000.0
+    }
+  ]
+}

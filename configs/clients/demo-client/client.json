@@ -1,0 +1,7 @@
+{
+  "client_id": "demo-client",
+  "client_name": "Demo Client",
+  "currency": "USD",
+  "contract_path": "configs/clients/demo-client/contract.md",
+  "work_log_path": "configs/clients/demo-client/work_log.json"
+}

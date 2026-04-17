@@ -1,0 +1,13 @@
+{
+  "client_name": "Mapping Test Client",
+  "generated_at": "2026-04-16T20:19:37",
+  "included_artifacts": {
+    "scope_creep_report_path": "/Users/physis/Documents/scope-creep-enforcer/reports/demo-client-scope-creep-report.md",
+    "invoice_markdown_path": "/Users/physis/Documents/scope-creep-enforcer/invoices/tmp3zzizq2f-invoice.md",
+    "invoice_json_path": "/Users/physis/Documents/scope-creep-enforcer/invoices/tmp3zzizq2f-invoice.json",
+    "billing_cover_path": "/Users/physis/Documents/scope-creep-enforcer/billing/tmp3zzizq2f-billing-cover.md",
+    "billing_package_path": "/Users/physis/Documents/scope-creep-enforcer/billing/tmp3zzizq2f-billing-package.json"
+  },
+  "delivery_status": "ready_for_review",
+  "recommended_recipient_type": "internal"
+}

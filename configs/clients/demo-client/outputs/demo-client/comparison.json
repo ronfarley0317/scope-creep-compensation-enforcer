@@ -1,0 +1,71 @@
+{
+  "in_scope_items": [
+    {
+      "work_item_id": "demo-work-001",
+      "matched_scope_id": "ad-creatives",
+      "matched_deliverable": "Ad Creatives",
+      "reason": "Work item matches normalized scope and does not exceed config-defined limits.",
+      "source_hours": 18.0
+    }
+  ],
+  "out_of_scope_items": [],
+  "exceeded_limits": [
+    {
+      "work_item_id": "demo-work-002",
+      "limit_id": "revision-rounds",
+      "limit_type": "revision_rounds",
+      "allowed_value": 2.0,
+      "actual_value": 4,
+      "unit": "rounds",
+      "reason": "Configured revision limit exceeded for Ad Creatives."
+    },
+    {
+      "work_item_id": "demo-work-003",
+      "limit_id": "landing-page-section",
+      "limit_type": "extra_section",
+      "allowed_value": 1.0,
+      "actual_value": 2.0,
+      "unit": "section",
+      "reason": "Configured quantity limit exceeded for Landing Page."
+    }
+  ],
+  "revenue_impact_estimate": {
+    "currency": "USD",
+    "estimated_amount": 600.0,
+    "pricing_basis": "Sum of config-driven billable event estimates.",
+    "pricing_confidence": "high",
+    "notes": ""
+  },
+  "creep_events": [
+    {
+      "id": "creep_1",
+      "client_id": "demo-client",
+      "work_item_id": "demo-work-002",
+      "event_type": "limit_exceeded",
+      "reason": "Configured revision limit exceeded for deliverable 'Ad Creatives'.",
+      "scope_reference_id": "ad-creatives",
+      "rule_code": "included_revisions_exceeded",
+      "billable_hours": null,
+      "billable_quantity": 2,
+      "billable_unit": "rounds",
+      "rate": 150.0,
+      "estimated_amount": 300.0,
+      "currency": "USD"
+    },
+    {
+      "id": "creep_2",
+      "client_id": "demo-client",
+      "work_item_id": "demo-work-003",
+      "event_type": "extra_section",
+      "reason": "Configured quantity limit exceeded for deliverable 'Landing Page'.",
+      "scope_reference_id": "landing-page",
+      "rule_code": "extra_section",
+      "billable_hours": null,
+      "billable_quantity": 1.0,
+      "billable_unit": "section",
+      "rate": 300.0,
+      "estimated_amount": 300.0,
+      "currency": "USD"
+    }
+  ]
+}

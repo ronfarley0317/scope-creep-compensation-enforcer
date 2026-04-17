@@ -1,0 +1,29 @@
+{
+  "work_items": [
+    {
+      "id": "work-001",
+      "deliverable_hint": "landing-page",
+      "category": "design",
+      "description": "Initial landing page design concepts",
+      "hours": 6,
+      "performed_on": "2026-04-10"
+    },
+    {
+      "id": "work-002",
+      "deliverable_hint": "landing-page",
+      "category": "revision",
+      "description": "Third revision round for landing page updates",
+      "hours": 3,
+      "revision_number": 3,
+      "performed_on": "2026-04-11"
+    },
+    {
+      "id": "work-003",
+      "deliverable_hint": null,
+      "category": "CRM migration",
+      "description": "Support for moving lead forms into the CRM",
+      "hours": 4,
+      "performed_on": "2026-04-12"
+    }
+  ]
+}

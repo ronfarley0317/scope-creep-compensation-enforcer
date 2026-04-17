@@ -1,0 +1,27 @@
+{
+  "run_id": "run-20260416203353-14b49c76",
+  "client_name": "BrightPath Creative",
+  "started_at": "2026-04-16T20:33:53",
+  "completed_at": "2026-04-16T20:33:53",
+  "status": "success",
+  "scope_source_type": "local_fixture",
+  "work_source_type": "local_fixture",
+  "billing_source_type": "manual",
+  "total_scope_creep_events": 3,
+  "total_billable_impact": 1000.0,
+  "generated_artifacts": {
+    "output_dir": "/Users/physis/Documents/scope-creep-enforcer/outputs/demo-client",
+    "comparison": "/Users/physis/Documents/scope-creep-enforcer/outputs/demo-client/comparison.json",
+    "compensation": "/Users/physis/Documents/scope-creep-enforcer/outputs/demo-client/compensation.json",
+    "run_summary": "/Users/physis/Documents/scope-creep-enforcer/outputs/demo-client/run_summary.json",
+    "markdown_summary": "/Users/physis/Documents/scope-creep-enforcer/outputs/demo-client/summary.md",
+    "client_report": "/Users/physis/Documents/scope-creep-enforcer/outputs/reports/demo-client-scope-creep-report.md",
+    "invoice_json": "/Users/physis/Documents/scope-creep-enforcer/outputs/invoices/demo-client-invoice.json",
+    "invoice_markdown": "/Users/physis/Documents/scope-creep-enforcer/outputs/invoices/demo-client-invoice.md",
+    "billing_package_json": "/Users/physis/Documents/scope-creep-enforcer/outputs/billing/demo-client-billing-package.json",
+    "billing_cover_markdown": "/Users/physis/Documents/scope-creep-enforcer/outputs/billing/demo-client-billing-cover.md",
+    "delivery_package_json": "/Users/physis/Documents/scope-creep-enforcer/outputs/delivery/demo-client-delivery-package.json",
+    "delivery_summary_markdown": "/Users/physis/Documents/scope-creep-enforcer/outputs/delivery/demo-client-delivery-summary.md"
+  },
+  "error_message": null
+}

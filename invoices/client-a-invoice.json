@@ -1,0 +1,15 @@
+{
+  "invoice_id": "invoice-demo-2026-04-16",
+  "client_name": "Demo",
+  "date": "2026-04-16",
+  "line_items": [
+    {
+      "description": "The project included 4 creative for ad creatives. Work delivered exceeded that amount by 2 creative, for a total of 6 creative. This results in an additional charge of USD 400.00.",
+      "category": "ad_creative",
+      "quantity": 2.0,
+      "unit_price": 200.0,
+      "total": 400.0
+    }
+  ],
+  "total_amount": 400.0
+}
