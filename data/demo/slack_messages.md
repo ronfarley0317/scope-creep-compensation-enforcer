@@ -1,10 +1,10 @@
 # Slack-Style Scope Messages
 
 ## Message 1
-**Account Director:** Client wants two additional ad creative variants for the remarketing set. Can we fit those into this sprint?
+**Account Director:** Quick one from the client. They'd love 2 more creative variants for remarketing if we can squeeze them in this week.
 
 ## Message 2
-**Client Contact:** We need another round of revisions on the paid social set before sign-off. Please update the CTA copy and swap in the new offer language.
+**Client Contact:** We need another pass on the paid social set before sign-off. Can you tweak the CTA copy again and swap in the new offer language?
 
 ## Message 3
-**Project Manager:** Adding one more section to the landing page for social proof. Please include testimonial cards beneath the pricing block.
+**Project Manager:** Not a huge change, but can we add one more section to the landing page for social proof? Thinking testimonial cards right under pricing.
