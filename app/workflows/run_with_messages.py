@@ -5,9 +5,10 @@ import logging
 from pathlib import Path
 from typing import Any
 
+from app.services.client_env import client_env_context
 from app.services.config_loader import load_client_bundle
 from app.workflows.poll_messages import poll_all_channels
-from app.workflows.run_single_client import run_single_client, _resolve_client_layout
+from app.workflows.run_single_client import run_single_client, _resolve_client_layout, _run_single_client_inner
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +25,15 @@ def run_client_with_messages(client_dir: str | Path) -> dict[str, Any]:
     base_path = Path(client_dir)
     client_root, config_dir = _resolve_client_layout(base_path)
 
+    with client_env_context(client_root):
+        return _run_with_messages_inner(base_path, client_root, config_dir)
+
+
+def _run_with_messages_inner(
+    base_path: Path,
+    client_root: Path,
+    config_dir: Path,
+) -> dict[str, Any]:
     bundle = load_client_bundle(config_dir)
     client_config = {
         **bundle.client,
@@ -38,7 +48,7 @@ def run_client_with_messages(client_dir: str | Path) -> dict[str, Any]:
             len(message_work_items),
         )
 
-    return run_single_client(base_path, extra_work_items=message_work_items)
+    return _run_single_client_inner(base_path, client_root, config_dir, message_work_items)
 
 
 def run_client_with_messages_loop(

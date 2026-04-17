@@ -8,6 +8,7 @@ from typing import Any
 from uuid import uuid4
 
 from app.models.run_metadata import RunMetadata
+from app.services.client_env import client_env_context
 from app.services.comparison_engine import ComparisonEngine
 from app.services.compensation_engine import CompensationEngine
 from app.services.config_loader import load_client_bundle
@@ -23,6 +24,16 @@ def run_single_client(
 ) -> dict[str, Any]:
     base_path = Path(client_dir)
     client_root, config_dir = _resolve_client_layout(base_path)
+    with client_env_context(client_root):
+        return _run_single_client_inner(base_path, client_root, config_dir, extra_work_items)
+
+
+def _run_single_client_inner(
+    base_path: Path,
+    client_root: Path,
+    config_dir: Path,
+    extra_work_items: list[dict[str, Any]] | None,
+) -> dict[str, Any]:
     run_id = _generate_run_id()
     started_at = datetime.now()
     client_name = client_root.name
