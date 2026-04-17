@@ -11,7 +11,7 @@ from app.workflows.run_single_client import run_single_client
 
 class SourceAdapterTest(unittest.TestCase):
     def test_local_fixture_adapter_returns_valid_inputs(self) -> None:
-        client_dir = Path("configs/clients/demo-client")
+        client_dir = Path("configs/client/demo-client")
         bundle = load_client_bundle(client_dir)
         client_config = {**bundle.client, "_client_dir": str(client_dir)}
         adapter = LocalFixtureAdapter()
@@ -29,7 +29,7 @@ class SourceAdapterTest(unittest.TestCase):
         self.assertTrue(health["healthy"])
 
     def test_system_runs_end_to_end_using_adapter(self) -> None:
-        client_dir = Path("configs/clients/demo-client")
+        client_dir = Path("configs/client/demo-client")
         bundle = load_client_bundle(client_dir)
         client_config = {**bundle.client, "_client_dir": str(client_dir)}
         resolver = SourceResolver()

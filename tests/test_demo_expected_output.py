@@ -10,10 +10,10 @@ from app.workflows.run_single_client import run_single_client
 
 class DemoExpectedOutputTest(unittest.TestCase):
     def test_demo_pipeline_matches_expected_scope_creep_output(self) -> None:
-        result = run_single_client(Path("configs/clients/demo-client"))
+        result = run_single_client(Path("configs/client/demo-client"))
         actual = self._project_actual_output(result)
         expected = json.loads(
-            Path("configs/clients/demo-client/expected_scope_creep_output.json").read_text(
+            Path("configs/client/demo-client/expected_scope_creep_output.json").read_text(
                 encoding="utf-8"
             )
         )

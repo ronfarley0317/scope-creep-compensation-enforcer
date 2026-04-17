@@ -40,7 +40,7 @@ class AsanaWorkAdapterTest(unittest.TestCase):
         self.assertEqual(health["actor_name"], "Adapter Test User")
 
     def test_workflow_runs_with_asana_work_source_and_mocked_responses(self) -> None:
-        demo_dir = Path("configs/clients/demo-client").resolve()
+        demo_dir = Path("configs/client/demo-client").resolve()
         with tempfile.TemporaryDirectory() as tmpdir:
             client_dir = Path(tmpdir) / "asana-client"
             client_dir.mkdir(parents=True, exist_ok=True)

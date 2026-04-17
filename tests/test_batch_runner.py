@@ -50,7 +50,7 @@ class BatchRunnerTest(unittest.TestCase):
             self.assertIn("Per-Client Results", markdown_path.read_text(encoding="utf-8"))
 
     def _build_test_clients(self, root: Path, *, include_broken: bool) -> Path:
-        demo_dir = Path("configs/clients/demo-client").resolve()
+        demo_dir = Path("configs/client/demo-client").resolve()
         clients_root = root / "configs" / "clients"
         clients_root.mkdir(parents=True, exist_ok=True)
 

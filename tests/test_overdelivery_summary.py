@@ -6,7 +6,7 @@ from app.workflows.run_single_client import run_single_client
 
 class OverdeliverySummaryTest(unittest.TestCase):
     def test_demo_overdelivery_summary(self) -> None:
-        result = run_single_client(Path("configs/clients/demo-client"))
+        result = run_single_client(Path("configs/client/demo-client"))
         summary = result["overdelivery_summary"]
 
         self.assertEqual(summary["overall_agreed_allowance"], 7.0)

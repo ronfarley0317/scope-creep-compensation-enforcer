@@ -7,7 +7,7 @@ from app.services.contract_parser import ContractParser
 class ContractParserTest(unittest.TestCase):
     def test_parse_demo_contract(self) -> None:
         contract = ContractParser().parse_file(
-            Path("configs/clients/demo-client/contract.md")
+            Path("configs/client/demo-client/contract.md")
         )
 
         self.assertEqual(contract.client_id, "demo-client")

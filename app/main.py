@@ -25,8 +25,8 @@ def _build_parser() -> argparse.ArgumentParser:
         description="Run Scope Creep Enforcer for one client or all configured clients."
     )
     group = parser.add_mutually_exclusive_group()
-    group.add_argument("--client", help="Client key under configs/clients/, for example demo-client.")
-    group.add_argument("--all-clients", action="store_true", help="Run every client under configs/clients/.")
+    group.add_argument("--client", help="Client key under configs/client/, for example demo-client.")
+    group.add_argument("--all-clients", action="store_true", help="Run every client under configs/client/.")
     parser.add_argument(
         "--configs-root",
         default="clients",

@@ -7,7 +7,7 @@ from app.workflows.run_single_client import run_single_client
 
 class DeliveryArtifactGeneratorTest(unittest.TestCase):
     def test_delivery_files_are_created(self) -> None:
-        result = run_single_client(Path("configs/clients/demo-client"))
+        result = run_single_client(Path("configs/client/demo-client"))
 
         package_path = Path(result["output_paths"]["delivery_package_json"])
         summary_path = Path(result["output_paths"]["delivery_summary_markdown"])
@@ -17,7 +17,7 @@ class DeliveryArtifactGeneratorTest(unittest.TestCase):
         self.assertIn("Files Ready For Review/Send", summary_path.read_text(encoding="utf-8"))
 
     def test_delivery_package_references_expected_artifact_paths(self) -> None:
-        result = run_single_client(Path("configs/clients/demo-client"))
+        result = run_single_client(Path("configs/client/demo-client"))
 
         package_path = Path(result["output_paths"]["delivery_package_json"])
         delivery_package = json.loads(package_path.read_text(encoding="utf-8"))

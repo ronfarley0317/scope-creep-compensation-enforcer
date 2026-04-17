@@ -11,7 +11,7 @@ class RunHistoryTest(unittest.TestCase):
         run_history_dir = Path("outputs/run_history")
         before = {path.name for path in run_history_dir.glob("*.json")} if run_history_dir.exists() else set()
 
-        result = run_single_client(Path("configs/clients/demo-client"))
+        result = run_single_client(Path("configs/client/demo-client"))
 
         run_history_path = Path(result["output_paths"]["run_history"])
         self.assertTrue(run_history_path.exists())
@@ -24,7 +24,7 @@ class RunHistoryTest(unittest.TestCase):
         self.assertEqual(metadata["total_billable_impact"], 1000.0)
 
     def test_failed_run_writes_run_history(self) -> None:
-        demo_dir = Path("configs/clients/demo-client").resolve()
+        demo_dir = Path("configs/client/demo-client").resolve()
         with tempfile.TemporaryDirectory() as tmpdir:
             tmp_path = Path(tmpdir)
             client_dir = tmp_path / "broken-client"
@@ -62,7 +62,7 @@ class RunHistoryTest(unittest.TestCase):
             self.assertIn("Unsupported billing adapter type", metadata["error_message"])
 
     def test_artifact_paths_are_captured_in_run_history(self) -> None:
-        result = run_single_client(Path("configs/clients/demo-client"))
+        result = run_single_client(Path("configs/client/demo-client"))
 
         run_history_path = Path(result["output_paths"]["run_history"])
         metadata = json.loads(run_history_path.read_text(encoding="utf-8"))

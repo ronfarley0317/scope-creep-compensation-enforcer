@@ -49,7 +49,7 @@ class CompensationEngineTest(unittest.TestCase):
         self.assertIn("included automatically", enforce_result.client_facing_summary["action_to_take"])
 
     def _load_demo_comparison(self):
-        client_dir = Path("configs/clients/demo-client")
+        client_dir = Path("configs/client/demo-client")
         bundle = load_client_bundle(client_dir)
         normalizer = ScopeNormalizer(bundle.client, bundle.contract_rules, bundle.field_mapping)
         raw_contract = ContractParser().parse_raw_file(client_dir / "structured_sow.md")

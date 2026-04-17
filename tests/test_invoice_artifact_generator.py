@@ -7,7 +7,7 @@ from app.workflows.run_single_client import run_single_client
 
 class InvoiceArtifactGeneratorTest(unittest.TestCase):
     def test_invoice_totals_and_config_pricing(self) -> None:
-        result = run_single_client(Path("configs/clients/demo-client"))
+        result = run_single_client(Path("configs/client/demo-client"))
         invoice_json = result["invoice_artifacts"]["invoice_json"]
         line_items = invoice_json["line_items"]
 
@@ -25,7 +25,7 @@ class InvoiceArtifactGeneratorTest(unittest.TestCase):
         self.assertEqual(by_category["landing_page"]["unit_price"], 300.0)
 
     def test_invoice_output_files_are_created(self) -> None:
-        result = run_single_client(Path("configs/clients/demo-client"))
+        result = run_single_client(Path("configs/client/demo-client"))
 
         invoice_json_path = Path(result["output_paths"]["invoice_json"])
         invoice_markdown_path = Path(result["output_paths"]["invoice_markdown"])

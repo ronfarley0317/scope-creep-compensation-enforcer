@@ -6,7 +6,7 @@ from app.workflows.run_single_client import run_single_client
 
 class RevenueLeakageProjectionTest(unittest.TestCase):
     def test_demo_projection_uses_observation_window_and_events(self) -> None:
-        result = run_single_client(Path("configs/clients/demo-client"))
+        result = run_single_client(Path("configs/client/demo-client"))
         projection = result["revenue_leakage_projection"]
 
         self.assertEqual(projection["event_count"], 3)

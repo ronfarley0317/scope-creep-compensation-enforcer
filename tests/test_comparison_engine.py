@@ -10,10 +10,10 @@ from app.services.contract_parser import ContractParser
 class ComparisonEngineTest(unittest.TestCase):
     def test_compare_demo_work_log(self) -> None:
         contract = ContractParser().parse_file(
-            Path("configs/clients/demo-client/contract.md")
+            Path("configs/client/demo-client/contract.md")
         )
         payload = json.loads(
-            Path("configs/clients/demo-client/work_log.json").read_text(encoding="utf-8")
+            Path("configs/client/demo-client/work_log.json").read_text(encoding="utf-8")
         )
         work_items = [WorkItem(**item) for item in payload["work_items"]]
 

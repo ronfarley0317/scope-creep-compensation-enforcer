@@ -9,7 +9,7 @@ from app.workflows.run_single_client import run_single_client
 
 class ManualBillingAdapterTest(unittest.TestCase):
     def test_manual_billing_adapter_produces_expected_files(self) -> None:
-        result = run_single_client(Path("configs/clients/demo-client"))
+        result = run_single_client(Path("configs/client/demo-client"))
 
         billing_json_path = Path(result["output_paths"]["billing_package_json"])
         billing_markdown_path = Path(result["output_paths"]["billing_cover_markdown"])
@@ -28,7 +28,7 @@ class ManualBillingAdapterTest(unittest.TestCase):
         self.assertIn("manual billing review and send", billing_markdown_path.read_text(encoding="utf-8"))
 
     def test_manual_billing_adapter_healthcheck(self) -> None:
-        client_dir = Path("configs/clients/demo-client")
+        client_dir = Path("configs/client/demo-client")
         bundle = load_client_bundle(client_dir)
         client_config = {**bundle.client, "_client_dir": str(client_dir)}
 
