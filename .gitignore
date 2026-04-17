@@ -13,3 +13,4 @@ client/*/billing/
 clients/*/outputs/
 clients/*/runs/
 clients/*/billing/
+clients/*/state/

@@ -17,7 +17,10 @@ from app.services.scope_normalizer import ScopeNormalizer
 from app.sources.resolver import SourceResolver
 
 
-def run_single_client(client_dir: str | Path) -> dict[str, Any]:
+def run_single_client(
+    client_dir: str | Path,
+    extra_work_items: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     base_path = Path(client_dir)
     client_root, config_dir = _resolve_client_layout(base_path)
     run_id = _generate_run_id()
@@ -57,6 +60,10 @@ def run_single_client(client_dir: str | Path) -> dict[str, Any]:
 
         contract = normalizer.normalize_contract(scope_input)
         work_items = normalizer.normalize_work_log(work_activity_input)
+
+        if extra_work_items:
+            message_items = normalizer.normalize_work_log_from_dicts(extra_work_items)
+            work_items = work_items + message_items
 
         comparison_result = ComparisonEngine().compare(contract, work_items)
         enforcement_mode = (

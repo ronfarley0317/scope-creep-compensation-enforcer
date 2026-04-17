@@ -7,6 +7,7 @@ from typing import Sequence
 
 from app.workflows.run_all_clients import run_all_clients
 from app.workflows.run_single_client import run_single_client
+from app.workflows.run_with_messages import run_client_with_messages, run_client_with_messages_loop
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -17,6 +18,20 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _run_all_clients(configs_root)
 
     client_key = args.client or "demo-client"
+    client_dir = configs_root / client_key
+
+    if not client_dir.exists():
+        print(f"Client config not found: {client_dir}", file=sys.stderr)
+        return 1
+
+    if args.poll:
+        if args.poll_interval > 0:
+            run_client_with_messages_loop(client_dir, poll_interval_minutes=args.poll_interval)
+            return 0
+        result = run_client_with_messages(client_dir)
+        print(result["terminal_summary"])
+        return 0
+
     return _run_single_client(configs_root, client_key)
 
 
@@ -25,12 +40,24 @@ def _build_parser() -> argparse.ArgumentParser:
         description="Run Scope Creep Enforcer for one client or all configured clients."
     )
     group = parser.add_mutually_exclusive_group()
-    group.add_argument("--client", help="Client key under configs/client/, for example demo-client.")
-    group.add_argument("--all-clients", action="store_true", help="Run every client under configs/client/.")
+    group.add_argument("--client", help="Client key under clients/, for example demo-client.")
+    group.add_argument("--all-clients", action="store_true", help="Run every client under clients/.")
     parser.add_argument(
         "--configs-root",
         default="clients",
         help="Root directory containing client configuration folders.",
+    )
+    parser.add_argument(
+        "--poll",
+        action="store_true",
+        help="Poll configured message channels (Slack, Gmail, Outlook, Asana comments) before running.",
+    )
+    parser.add_argument(
+        "--poll-interval",
+        type=int,
+        default=0,
+        metavar="MINUTES",
+        help="Run continuously, polling every N minutes. Requires --poll. Default: run once.",
     )
     return parser
 

@@ -2,11 +2,15 @@ from __future__ import annotations
 
 from typing import Any
 
-from app.sources.billing_base import BillingAdapter
+from app.sources.asana_comments_adapter import AsanaCommentsAdapter
 from app.sources.asana_work_adapter import AsanaWorkAdapter
-from app.sources.base import SourceAdapter
+from app.sources.base import MessageSourceAdapter, SourceAdapter
+from app.sources.billing_base import BillingAdapter
+from app.sources.gmail_adapter import GmailMessageAdapter
 from app.sources.local_fixture_adapter import LocalFixtureAdapter
 from app.sources.manual_billing_adapter import ManualBillingAdapter
+from app.sources.outlook_adapter import OutlookMessageAdapter
+from app.sources.slack_adapter import SlackMessageAdapter
 
 
 class SourceResolver:
@@ -17,6 +21,12 @@ class SourceResolver:
         }
         self._billing_registry: dict[str, type[BillingAdapter]] = {
             "manual": ManualBillingAdapter,
+        }
+        self._message_registry: dict[str, type[MessageSourceAdapter]] = {
+            "slack": SlackMessageAdapter,
+            "gmail": GmailMessageAdapter,
+            "outlook": OutlookMessageAdapter,
+            "asana_comment": AsanaCommentsAdapter,
         }
 
     def get_scope_source_type(self, client_config: dict[str, Any]) -> str:
@@ -58,6 +68,17 @@ class SourceResolver:
             "work_adapter": self.resolve_work_adapter(client_config),
             "billing_adapter": self.resolve_billing_adapter(client_config),
         }
+
+    def resolve_message_adapters(self, client_config: dict[str, Any]) -> list[MessageSourceAdapter]:
+        """Return one adapter per configured message_source_type. Unknown types are skipped."""
+        types: list[str] = client_config.get("message_source_types", [])
+        adapters = []
+        for source_type in types:
+            adapter_cls = self._message_registry.get(source_type)
+            if adapter_cls is None:
+                raise ValueError(f"Unsupported message adapter type: {source_type!r}")
+            adapters.append(adapter_cls())
+        return adapters
 
     def _build_adapter(self, source_type: str) -> SourceAdapter:
         adapter_cls = self._source_registry.get(source_type)

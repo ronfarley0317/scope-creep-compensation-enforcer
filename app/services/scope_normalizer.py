@@ -105,6 +105,11 @@ class ScopeNormalizer:
             interpretation=self.contract_rules.get("interpretation", {}),
         )
 
+    def normalize_work_log_from_dicts(self, raw_items: list[dict[str, Any]]) -> list[WorkItem]:
+        """Normalize a list of pre-built work item dicts (e.g. from message adapters)."""
+        fake_payload: dict[str, Any] = {"work_items": raw_items}
+        return self.normalize_work_log(fake_payload)
+
     def normalize_work_log(self, work_activity_input: WorkActivityInput | dict[str, Any]) -> list[WorkItem]:
         raw_work_log = (
             work_activity_input.payload

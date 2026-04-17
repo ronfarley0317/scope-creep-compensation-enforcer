@@ -19,3 +19,17 @@ default_outputs:
   compensation_draft_format: json
   audit_mode: strict
   compensation_enforcement_mode: recommend
+
+# Message channel monitoring — add channels as credentials are configured
+# message_source_types:
+#   - slack
+#   - gmail
+#   - outlook
+#   - asana_comment
+# slack_channel_ids:
+#   - C0123456789
+# slack_lookback_hours: 24
+# gmail_query: "from:client@example.com"
+# gmail_credentials_path: ~/.config/scope-enforcer/gmail-creds.json
+# outlook_mailbox: me
+# outlook_folder: inbox
