@@ -12,8 +12,32 @@ field_mapping_path: field_mapping.yaml
 sample_sow_path: ../inputs/sow.md
 sample_work_log_path: ../inputs/work_log.csv
 scope_source_type: local_fixture
+# work_source_type options: local_fixture | asana | jira | linear | clickup
 work_source_type: local_fixture
 billing_source_type: manual
+
+# --- Jira work source (set work_source_type: jira to activate)
+# jira:
+#   host_env: JIRA_HOST            # yourco.atlassian.net
+#   email_env: JIRA_EMAIL
+#   api_token_env: JIRA_API_TOKEN
+#   project_key: PROJ
+#   completed_since: "2026-01-01"
+#   page_size: 100
+
+# --- Linear work source (set work_source_type: linear to activate)
+# linear:
+#   api_key_env: LINEAR_API_KEY
+#   team_id: your-team-uuid
+#   project_id: your-project-uuid  # optional
+#   completed_since: "2026-01-01"
+
+# --- ClickUp work source (set work_source_type: clickup to activate)
+# clickup:
+#   api_token_env: CLICKUP_API_TOKEN
+#   list_id: "123456789"
+#   completed_since: "2026-01-01"
+#   page_size: 100
 default_outputs:
   scope_creep_event_format: json
   compensation_draft_format: json
@@ -33,3 +57,25 @@ default_outputs:
 # gmail_credentials_path: ~/.config/scope-enforcer/gmail-creds.json
 # outlook_mailbox: me
 # outlook_folder: inbox
+
+# Webhook server — signing secrets for real-time event verification
+# webhook:
+#   slack_signing_secret_env: SLACK_SIGNING_SECRET      # HMAC-SHA256 key from Slack app settings
+#   gmail_pubsub_token_env: GMAIL_PUBSUB_TOKEN          # Bearer token for Pub/Sub push verification
+#   outlook_client_state_env: OUTLOOK_CLIENT_STATE      # Shared secret sent with every Graph notification
+
+# Internal alert — Slack channel where YOUR team gets notified when creep is detected
+# This is separate from the client channels being monitored above.
+# internal_alert:
+#   slack_bot_token_env: ALERT_SLACK_BOT_TOKEN  # can be same bot as SLACK_BOT_TOKEN
+#   slack_channel_id: C0YOURTEAMCHANNEL         # your internal #scope-alerts channel
+
+# Invoice delivery — auto-send approved invoices to the client
+# invoice_delivery:
+#   method: email
+#   email_to: client@example.com        # client's billing contact
+#   email_from_env: INVOICE_FROM_EMAIL  # your sending address
+#   smtp_host_env: SMTP_HOST            # e.g. smtp.gmail.com
+#   smtp_port: 587
+#   smtp_user_env: SMTP_USER
+#   smtp_password_env: SMTP_PASSWORD

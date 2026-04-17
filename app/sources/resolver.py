@@ -6,7 +6,10 @@ from app.sources.asana_comments_adapter import AsanaCommentsAdapter
 from app.sources.asana_work_adapter import AsanaWorkAdapter
 from app.sources.base import MessageSourceAdapter, SourceAdapter
 from app.sources.billing_base import BillingAdapter
+from app.sources.clickup_work_adapter import ClickUpWorkAdapter
 from app.sources.gmail_adapter import GmailMessageAdapter
+from app.sources.jira_work_adapter import JiraWorkAdapter
+from app.sources.linear_work_adapter import LinearWorkAdapter
 from app.sources.local_fixture_adapter import LocalFixtureAdapter
 from app.sources.manual_billing_adapter import ManualBillingAdapter
 from app.sources.outlook_adapter import OutlookMessageAdapter
@@ -18,6 +21,9 @@ class SourceResolver:
         self._source_registry: dict[str, type[SourceAdapter]] = {
             "local_fixture": LocalFixtureAdapter,
             "asana": AsanaWorkAdapter,
+            "jira": JiraWorkAdapter,
+            "linear": LinearWorkAdapter,
+            "clickup": ClickUpWorkAdapter,
         }
         self._billing_registry: dict[str, type[BillingAdapter]] = {
             "manual": ManualBillingAdapter,

@@ -398,7 +398,9 @@ class ComparisonEngine:
             f"This results in an additional charge of {currency} {estimated_amount:.2f}."
         )
 
-    def _humanize_deliverable_name(self, deliverable_name: str) -> str:
+    def _humanize_deliverable_name(self, deliverable_name: str | None) -> str:
+        if not deliverable_name:
+            return "unknown"
         return deliverable_name.replace("_", " ").replace("-", " ").strip().lower()
 
     def _build_revenue_estimate(

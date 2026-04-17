@@ -23,7 +23,7 @@ class Deliverable:
         normalized_categories = {item.strip().lower() for item in self.task_categories}
         return (
             normalized_hint in {normalized_id, normalized_name}
-            or category.strip().lower() in normalized_categories
+            or bool(category and category.strip().lower() in normalized_categories)
         )
 
 
@@ -85,7 +85,9 @@ class ContractScope:
                 return rule
         return None
 
-    def is_excluded(self, work_text: str) -> bool:
+    def is_excluded(self, work_text: str | None) -> bool:
+        if not work_text:
+            return False
         normalized = work_text.strip().lower()
         return any(item.strip().lower() == normalized for item in self.exclusions)
 

@@ -252,7 +252,11 @@ def build_markdown_summary(run_result: dict[str, Any]) -> str:
         "",
         f"- Client: {run_result['client']['client_name']} (`{run_result['client']['client_id']}`)",
         f"- Scope-creep events: {len(comparison['creep_events'])}",
-        f"- Estimated billable amount: {comparison['revenue_impact_estimate']['currency']} {comparison['revenue_impact_estimate']['estimated_amount']:.2f}",
+        (
+            f"- Estimated billable amount: {comparison['revenue_impact_estimate']['currency']} {comparison['revenue_impact_estimate']['estimated_amount']:.2f}"
+            if comparison["revenue_impact_estimate"]["estimated_amount"] is not None
+            else "- Estimated billable amount: requires review"
+        ),
         f"- Compensation type: {compensation['compensation_type']}",
         "",
         "## Decision Trace",
@@ -306,7 +310,11 @@ def build_client_report(run_result: dict[str, Any]) -> str:
         )
 
     revenue_lines = [
-        f"- Estimated total revenue impact: {currency} {total_amount:.2f}",
+        (
+            f"- Estimated total revenue impact: {currency} {total_amount:.2f}"
+            if total_amount is not None
+            else "- Estimated total revenue impact: requires review"
+        ),
         f"- Pricing basis: {revenue['pricing_basis']}",
         f"- Pricing confidence: {revenue['pricing_confidence']}",
     ]
@@ -350,7 +358,7 @@ def build_client_report(run_result: dict[str, Any]) -> str:
         (
             f"The demo workflow identified {len(comparison['creep_events'])} scope-creep event(s) for "
             f"{client['client_name']}. Based on the configured contract rules, the current estimated "
-            f"billable impact is {currency} {total_amount:.2f}."
+            + (f"billable impact is {currency} {total_amount:.2f}." if total_amount is not None else "billable impact requires review.")
         ),
         (
             f"Overall, this reflects a {overdelivery['overall_overdelivery_percent']:.1f}% over-delivery "

@@ -14,6 +14,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
     configs_root = Path(args.configs_root)
 
+    if args.serve:
+        return _run_server(configs_root, host=args.host, port=args.port, reload=args.reload)
+
     if args.all_clients:
         return _run_all_clients(configs_root)
 
@@ -59,7 +62,35 @@ def _build_parser() -> argparse.ArgumentParser:
         metavar="MINUTES",
         help="Run continuously, polling every N minutes. Requires --poll. Default: run once.",
     )
+    parser.add_argument(
+        "--serve",
+        action="store_true",
+        help="Start the webhook HTTP server (FastAPI/uvicorn). Listens for real-time events from Slack, Gmail, and Outlook.",
+    )
+    parser.add_argument("--host", default="0.0.0.0", help="Bind host for --serve. Default: 0.0.0.0")
+    parser.add_argument("--port", type=int, default=8000, help="Bind port for --serve. Default: 8000")
+    parser.add_argument(
+        "--reload",
+        action="store_true",
+        help="Enable auto-reload for --serve (development only).",
+    )
     return parser
+
+
+def _run_server(configs_root: Path, host: str, port: int, reload: bool) -> int:
+    import uvicorn
+    from app.webhooks.server import create_app
+
+    app = create_app(configs_root)
+    print(f"Webhook server starting — http://{host}:{port}")
+    print(f"Configs root: {configs_root}")
+    print("Endpoints:")
+    print(f"  GET  http://{host}:{port}/health")
+    print(f"  POST http://{host}:{port}/webhook/{{client_id}}/slack")
+    print(f"  POST http://{host}:{port}/webhook/{{client_id}}/gmail")
+    print(f"  POST http://{host}:{port}/webhook/{{client_id}}/outlook")
+    uvicorn.run(app, host=host, port=port, reload=reload)
+    return 0
 
 
 def _run_single_client(configs_root: Path, client_key: str) -> int:
