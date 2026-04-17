@@ -5,3 +5,11 @@ __pycache__/
 outputs/
 *.pyc
 .DS_Store
+
+# generated client outputs — never commit these
+client/*/outputs/
+client/*/runs/
+client/*/billing/
+clients/*/outputs/
+clients/*/runs/
+clients/*/billing/
