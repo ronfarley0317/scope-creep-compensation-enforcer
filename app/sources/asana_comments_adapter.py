@@ -116,6 +116,7 @@ class AsanaCommentsAdapter(MessageSourceAdapter):
             ))
         return messages
 
+    @retry_with_backoff()
     def _request_json(
         self,
         path: str,

@@ -1,0 +1,36 @@
+[Unit]
+Description=Scope Creep Enforcer — webhook server
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=scope-enforcer
+WorkingDirectory=/opt/scope-creep-enforcer
+# Load environment variables from a shared secrets file.
+# Per-client .env files are loaded by the app at runtime.
+EnvironmentFile=/opt/scope-creep-enforcer/.env
+
+ExecStart=/opt/scope-creep-enforcer/.venv/bin/python3 -m app.main \
+    --serve \
+    --host 127.0.0.1 \
+    --port 8000 \
+    --log-json
+
+# Restart on crash; back off up to 5 minutes between retries.
+Restart=on-failure
+RestartSec=5
+RestartMaxDelaySec=300
+
+# Reduce attack surface.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/scope-creep-enforcer/clients
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=scope-enforcer
+
+[Install]
+WantedBy=multi-user.target

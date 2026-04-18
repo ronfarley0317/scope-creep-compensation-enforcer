@@ -7,6 +7,7 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 from app.models.source_inputs import ScopeInput, WorkActivityInput
+from app.services.retry import retry_with_backoff
 from app.sources.base import SourceAdapter
 
 _GRAPHQL_URL = "https://api.linear.app/graphql"
@@ -129,6 +130,7 @@ class LinearWorkAdapter(SourceAdapter):
             "page_size": int(cfg.get("page_size", 50)),
         }
 
+    @retry_with_backoff()
     def _graphql(
         self,
         token: str,

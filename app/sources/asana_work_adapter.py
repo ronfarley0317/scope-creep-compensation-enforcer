@@ -9,6 +9,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 from app.models.source_inputs import ScopeInput, WorkActivityInput
+from app.services.retry import retry_with_backoff
 from app.sources.base import SourceAdapter
 
 
@@ -170,6 +171,7 @@ class AsanaWorkAdapter(SourceAdapter):
         settings["completed_since"] = settings.get("completed_since", "now")
         return settings
 
+    @retry_with_backoff()
     def _request_json(
         self,
         path: str,

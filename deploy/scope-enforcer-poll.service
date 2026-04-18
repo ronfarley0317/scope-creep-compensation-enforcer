@@ -1,0 +1,32 @@
+[Unit]
+Description=Scope Creep Enforcer — polling worker (all clients)
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=scope-enforcer
+WorkingDirectory=/opt/scope-creep-enforcer
+EnvironmentFile=/opt/scope-creep-enforcer/.env
+
+ExecStart=/opt/scope-creep-enforcer/.venv/bin/python3 -m app.main \
+    --all-clients \
+    --poll \
+    --poll-interval 30 \
+    --log-json
+
+Restart=on-failure
+RestartSec=10
+RestartMaxDelaySec=300
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/scope-creep-enforcer/clients
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=scope-enforcer-poll
+
+[Install]
+WantedBy=multi-user.target

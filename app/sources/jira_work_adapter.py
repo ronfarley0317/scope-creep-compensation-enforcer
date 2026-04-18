@@ -9,6 +9,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 from app.models.source_inputs import ScopeInput, WorkActivityInput
+from app.services.retry import retry_with_backoff
 from app.sources.base import SourceAdapter
 
 _BASE = "https://{host}/rest/api/3"
@@ -125,6 +126,7 @@ class JiraWorkAdapter(SourceAdapter):
             "page_size": int(cfg.get("page_size", 100)),
         }
 
+    @retry_with_backoff()
     def _get(
         self, settings: dict[str, Any], path: str, params: dict[str, Any] | None = None
     ) -> dict[str, Any]:

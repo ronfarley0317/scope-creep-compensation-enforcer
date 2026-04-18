@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import logging
 import sys
 from pathlib import Path
 from typing import Sequence
@@ -12,7 +13,17 @@ from app.workflows.run_with_messages import run_client_with_messages, run_client
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
+    _configure_logging(json_logs=args.log_json)
     configs_root = Path(args.configs_root)
+
+    if args.new_client:
+        return _scaffold_new_client(args.new_client, configs_root)
+
+    if args.validate_client:
+        return _validate_client(args.validate_client, configs_root)
+
+    if args.status:
+        return _print_status(configs_root)
 
     if args.serve:
         return _run_server(configs_root, host=args.host, port=args.port, reload=args.reload)
@@ -45,6 +56,26 @@ def _build_parser() -> argparse.ArgumentParser:
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--client", help="Client key under clients/, for example demo-client.")
     group.add_argument("--all-clients", action="store_true", help="Run every client under clients/.")
+    parser.add_argument(
+        "--new-client",
+        metavar="NAME",
+        help="Scaffold a new client directory under clients/ with template configs.",
+    )
+    parser.add_argument(
+        "--validate-client",
+        metavar="CLIENT_KEY",
+        help="Validate config files and env vars for a client.",
+    )
+    parser.add_argument(
+        "--status",
+        action="store_true",
+        help="Print a status table across all configured clients.",
+    )
+    parser.add_argument(
+        "--log-json",
+        action="store_true",
+        help="Emit structured JSON log lines (for log aggregators). Default: human-readable.",
+    )
     parser.add_argument(
         "--configs-root",
         default="clients",
@@ -142,6 +173,56 @@ def build_batch_terminal_summary(result: dict) -> str:
     if failed_names:
         lines.append(f"Failed clients: {', '.join(failed_names)}")
     return "\n".join(lines)
+
+
+def _scaffold_new_client(client_name: str, configs_root: Path) -> int:
+    from app.workflows.new_client import scaffold_new_client
+    client_root = scaffold_new_client(client_name, configs_root)
+    print(f"Created: {client_root}")
+    print(f"  Edit {client_root}/config/client.yaml to configure work source and channels.")
+    print(f"  Edit {client_root}/config/contract_rules.yaml to match your contract.")
+    print(f"  Edit {client_root}/inputs/sow.md and inputs/work_log.csv.")
+    print(f"  Copy {client_root}/.env.example to {client_root}/.env and fill in credentials.")
+    print(f"  Run: python3 -m app.main --validate-client {client_root.name}")
+    return 0
+
+
+def _validate_client(client_key: str, configs_root: Path) -> int:
+    from app.workflows.new_client import validate_client
+    return validate_client(client_key, configs_root)
+
+
+def _print_status(configs_root: Path) -> int:
+    from app.workflows.dashboard import build_status_report
+    print(build_status_report(configs_root))
+    return 0
+
+
+def _configure_logging(json_logs: bool = False) -> None:
+    if json_logs:
+        import json as _json
+
+        class _JsonFormatter(logging.Formatter):
+            def format(self, record: logging.LogRecord) -> str:
+                payload = {
+                    "ts": self.formatTime(record, "%Y-%m-%dT%H:%M:%S"),
+                    "level": record.levelname,
+                    "logger": record.name,
+                    "msg": record.getMessage(),
+                }
+                if record.exc_info:
+                    payload["exc"] = self.formatException(record.exc_info)
+                return _json.dumps(payload)
+
+        handler = logging.StreamHandler(sys.stderr)
+        handler.setFormatter(_JsonFormatter())
+        logging.basicConfig(handlers=[handler], level=logging.INFO, force=True)
+    else:
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s %(levelname)s %(name)s — %(message)s",
+            stream=sys.stderr,
+        )
 
 
 if __name__ == "__main__":
