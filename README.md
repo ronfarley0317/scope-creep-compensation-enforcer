@@ -237,10 +237,10 @@ This is part of the **Revenue Enforcement Framework** — autonomous agents that
 
 | Agent | Status | What It Enforces |
 |-------|--------|-----------------|
-| [Scope Creep Compensation Enforcer](https://github.com/ronfarley0317/scope-creep-enforcer) | ✅ Live | No work delivered without compensation agreement |
-| [Invoice Payment Enforcer](https://github.com/ronfarley0317/invoice-enforcer) | 🔧 Building | No invoice sits unpaid beyond terms |
-| [Proposal Follow-Up Enforcer](https://github.com/ronfarley0317/proposal-follow-up-enforcer) | 🔧 Building | No proposal dies in silence |
-| [Enforcement Live Dashboard](https://github.com/ronfarley0317/enforcement-live-dashboard) | 🔧 Building | Watch enforcement agents operate in real time |
+| [Scope Creep Compensation Enforcer](https://github.com/ronfarley0317/scope-creep-compensation-enforcer/tree/main) | ✅ Live | No work delivered without compensation agreement |
+| [Invoice Payment Enforcer](https://github.com/ronfarley0317/collections-agent) | ✅ Live | No invoice sits unpaid beyond terms |
+| [Proposal Follow-Up Enforcer](https://github.com/ronfarley0317/proposal-follow-up-enforcer) | ✅ Live | No proposal dies in silence |
+| [Enforcement Live Dashboard](https://github.com/ronfarley0317/enforcement-live-dashboard) | ✅ Live | Watch enforcement agents operate in real time |
 
 ---
 
