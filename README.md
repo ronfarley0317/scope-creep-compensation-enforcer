@@ -1,12 +1,12 @@
 # Scope Creep Compensation Enforcer
 
-**60% of service projects experience unbilled scope expansion. At $5K average per project, that's $360K/year walking out the door — and nobody sends an invoice.**
+**60% of service projects experience unbilled scope expansion. At $5K average per project, that's $360K/year walking out the door and nobody sends an invoice.**
 
 ---
 
 ## What This Prevents
 
-A client asks for "one quick add" on Friday afternoon. Your team builds it. Nobody logs it. Nobody invoices it. The project closes and that work disappears into margin erosion. Multiply that by every project, every month, every client — and you have a structural revenue leak that no amount of team discipline will fix.
+A client asks for "one quick add" on Friday afternoon. Your team builds it. Nobody logs it. Nobody invoices it. The project closes and that work disappears into margin erosion. Multiply that by every project, every month, every client and you have a structural revenue leak that no amount of team discipline will fix.
 
 The typical marketing agency or professional services firm with 10 active projects per month loses $5K–$10K per project in unbilled scope creep. That's $360K–$720K per year in work that was completed, delivered, and never compensated. The work happened. The invoice didn't.
 
